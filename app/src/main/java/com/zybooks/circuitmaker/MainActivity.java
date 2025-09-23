@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Log.d("BUTTONS", "clicked");
-                tools = findViewById(R.id.circuit_tools);
+                tools = findViewById(R.id.tools_view);
                 int toolsVisible = tools.getVisibility();
                 if (toolsVisible == View.VISIBLE) {
                     tools.setVisibility(View.GONE);

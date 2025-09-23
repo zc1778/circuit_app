@@ -1,7 +1,10 @@
 package com.zybooks.circuitmaker;
 
 import android.os.Bundle;
-
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -21,4 +24,10 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
     }
+    ImageButton button = (ImageButton) findViewById(R.id.toolBox);
+    button.setOnClickListener(new View.OnClickListener() {
+        public void onClick(View v) {
+            Log.d("BUTTONS", "clicked");
+        }
+    });
 }

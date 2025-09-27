@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
     <View
-        android:id="@+id/view"
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="110dp"
         android:background="@color/white"
@@ -40,37 +40,36 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/ic_menu_save" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/tools_view"
+    <View
+        android:id="@+id/circuit_tools"
+        android:layout_width="120dp"
         android:layout_height="0dp"
-        android:layout_width="0dp"
+        android:background="@color/black"
         android:visibility="gone"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
-        <View
-            android:id="@+id/circuit_tools"
-            android:layout_width="120dp"
-            android:layout_height="0dp"
-            android:background="@color/black"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <Button
+        android:id="@+id/placeholder_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/placeholder_button"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/circuit_tools"
+        app:layout_constraintRight_toRightOf="@id/circuit_tools"
+        app:layout_constraintLeft_toLeftOf="@id/circuit_tools" />
 
-        <Button
-            android:id="@+id/placeholder_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/placeholder_button"
-            app:layout_constraintTop_toTopOf="@id/circuit_tools"
-            app:layout_constraintRight_toRightOf="@id/circuit_tools"
-            app:layout_constraintLeft_toLeftOf="@id/circuit_tools" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <View
+        android:id="@+id/circuit_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/circuit_tools"
+        app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

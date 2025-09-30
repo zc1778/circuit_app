@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Height of tools container", String.valueOf(tools.getHeight()));
 
             if (toolsVisible == View.VISIBLE) {
+                tools = findViewById(R.id.circuit_tools);
                 tools.setVisibility(View.GONE);
                 if (placeholderButton.getX() < tools.getWidth()) {
                     placeholderButton.setVisibility(View.GONE);
@@ -72,19 +73,28 @@ public class MainActivity extends AppCompatActivity {
 
     @NonNull
     private Button cloneButton(DragEvent e) {
-        Button cloneButton = new Button(MainActivity.this);
-        Button originalButton = ((Button) e.getLocalState());
 
-        cloneButton.setText(originalButton.getText());
-        cloneButton.setTextColor(originalButton.getCurrentTextColor());
-        cloneButton.setBackground(originalButton.getBackground());
+        Log.d("Local state", String.valueOf(((Button) e.getLocalState()).getX()));
+        Log.d("Tools x", String.valueOf(tools.getX()));
 
-        onLongClickListener(circuitView, cloneButton);
+        if (tools.getWidth() > ((Button) e.getLocalState()).getX()) {
 
-        return cloneButton;
+            Button cloneButton = new Button(MainActivity.this);
+            Button originalButton = ((Button) e.getLocalState());
+
+            cloneButton.setText(originalButton.getText());
+            cloneButton.setTextColor(originalButton.getCurrentTextColor());
+            cloneButton.setBackground(originalButton.getBackground());
+
+            onLongClickListener(circuitView, cloneButton);
+
+            return cloneButton;
+        }
+        return ((Button) e.getLocalState());
     }
 
     private void onLongClickListener(View v, Button button) {
+
         button.setOnLongClickListener( view -> {
 
             ClipData.Item item = new ClipData.Item((CharSequence) view.getTag());
@@ -140,15 +150,15 @@ public class MainActivity extends AppCompatActivity {
 
                 CharSequence dragData = item.getText();
 
-                buttonX = e.getX();
-                buttonY = e.getY();
-                Log.d("Drop X position", String.valueOf(buttonX));
-                Log.d("Drop Y position", String.valueOf(buttonY));
-
                 Button cloneButton = cloneButton(e);
                 if (cloneButton.getX() <= tools.getX()) {
                     circuitView.addView(cloneButton);
                 }
+
+                buttonX = e.getX();
+                buttonY = e.getY();
+                Log.d("Drop X position", String.valueOf(buttonX));
+                Log.d("Drop Y position", String.valueOf(buttonY));
 
                 cloneButton.setX(buttonX);
                 cloneButton.setY(buttonY);

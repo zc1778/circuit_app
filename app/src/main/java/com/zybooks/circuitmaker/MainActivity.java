@@ -1,8 +1,16 @@
 package com.zybooks.circuitmaker;
 
+import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipDescription;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
@@ -13,11 +21,22 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.mihir.drawingcanvas.drawingView;
+
+import java.io.File;
+import java.io.FileOutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int STORAGE_PERMISSION_CODE = 100;
     private View tools;
+    private drawingView draw;
     private ConstraintLayout circuitView;
+    private ImageButton undo, redo, stroke;
+    private Button clear, save;
     private float buttonX;
     private float buttonY;
 
@@ -25,6 +44,36 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    STORAGE_PERMISSION_CODE);
+        }
+
+//        draw = findViewById(R.id.circuit_view);
+//        undo = findViewById(R.id.undo);
+//        redo = findViewById(R.id.redo);
+//        clear = findViewById(R.id.clean);
+//        save = findViewById(R.id.save);
+//
+//        undo.setOnClickListener(v -> draw.undo());
+//        redo.setOnClickListener(v -> draw.redo());
+//        clear.setOnClickListener(v -> draw.clearDrawingBoard());
+//
+//        save.setOnClickListener(v -> draw.post(() -> {
+//            Bitmap bitmap = getBitmapFromView(draw);
+//            Uri imageUri = saveBitmapToStorage(bitmap);
+//
+//            if (imageUri != null) {
+//                Log.e("draw", "Image saved at: " + imageUri);
+//                Toast.makeText(this, "Image saved!", Toast.LENGTH_SHORT).show();
+//                shareImage(imageUri);
+//            } else {
+//                Log.e("draw", "Saving failed");
+//                Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
+//            }
+//        }));
 
         tools = findViewById(R.id.circuit_tools);
         ImageButton button = findViewById(R.id.toolBox);
@@ -70,6 +119,54 @@ public class MainActivity extends AppCompatActivity {
         // Set drag listener for the View
         circuitView.setOnDragListener(this::dragListener);
     }
+
+//    private Bitmap getBitmapFromView(View view) {
+//        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),
+//                Bitmap.Config.ARGB_8888);
+//        Canvas canvas = new Canvas(bitmap);
+//        if (view.getBackground() != null) {
+//            view.getBackground().draw(canvas);
+//        } else {
+//            canvas.drawColor(Color.WHITE);
+//        }
+//        view.draw(canvas);
+//        return bitmap;
+//    }
+//
+//    private Uri saveBitmapToStorage(Bitmap bitmap) {
+//        String filename = "Drawing " + System.currentTimeMillis() + ".png";
+//        Uri uri = null;
+//
+//        try {
+//            File imagesDir = new File(getExternalFilesDir(null) + "/Pictures/DrawingApp");
+//
+//            if (!imagesDir.exists()) {
+//                imagesDir.mkdirs();
+//            }
+//
+//            File imageFile = new File(imagesDir, filename);
+//            FileOutputStream outputStream = new FileOutputStream(imageFile);
+//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+//            outputStream.flush();
+//            outputStream.close();
+//
+//            MediaStore.Images.Media.insertImage(getContentResolver(),
+//                    imageFile.getAbsolutePath(), filename, null);
+//            uri = Uri.fromFile(imageFile);
+//        } catch (Exception e) {
+//            Log.e("draw", "Error saving image: " + e.getMessage());
+//            e.printStackTrace();
+//        }
+//
+//        return uri;
+//    }
+//
+//    private void shareImage(Uri uri) {
+//        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+//        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+//        shareIntent.setType("image/png");
+//        startActivity(Intent.createChooser(shareIntent, "Share via"));
+//    }
 
     @NonNull
     private Button cloneButton(DragEvent e) {

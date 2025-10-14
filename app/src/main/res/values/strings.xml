@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">CircuitMaker</string>
+    <string name="toolbox">toolbox</string>
+    <string name="save_icon">Save Icon</string>
+    <string name="placeholder_button">Button</string>
+    <string name="clear">Clear</string>
+    <string name="save">Save</string>
+    <string name="undo">Undo</string>
+    <string name="redo">Redo</string>
+</resources>

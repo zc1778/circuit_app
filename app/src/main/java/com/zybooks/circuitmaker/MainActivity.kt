@@ -12,23 +12,23 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offest
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
 
-    // val STORAGE_PERMISSION_CODE: Int = 100
     private var tools: View? = null
 
-    // private val draw: drawingView? = null
     private var circuitView: ConstraintLayout? = null
 
-    //    private val undo: ImageButton? = null
-//    val redo: ImageButton? = null
-//    val stroke: ImageButton? = null
-//    private val clear: Button? = null
-//    val save: Button? = null
     private var buttonX = 0f
     private var buttonY = 0f
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,54 +79,11 @@ class MainActivity : AppCompatActivity() {
         circuitView?.setOnDragListener(this::dragListener)
     }
 
+    @Composable
+    private fun DrawLine() {
 
-    //    private Bitmap getBitmapFromView(View view) {
-    //        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),
-    //                Bitmap.Config.ARGB_8888);
-    //        Canvas canvas = new Canvas(bitmap);
-    //        if (view.getBackground() != null) {
-    //            view.getBackground().draw(canvas);
-    //        } else {
-    //            canvas.drawColor(Color.WHITE);
-    //        }
-    //        view.draw(canvas);
-    //        return bitmap;
-    //    }
-    //
-    //    private Uri saveBitmapToStorage(Bitmap bitmap) {
-    //        String filename = "Drawing " + System.currentTimeMillis() + ".png";
-    //        Uri uri = null;
-    //
-    //        try {
-    //            File imagesDir = new File(getExternalFilesDir(null) + "/Pictures/DrawingApp");
-    //
-    //            if (!imagesDir.exists()) {
-    //                imagesDir.mkdirs();
-    //            }
-    //
-    //            File imageFile = new File(imagesDir, filename);
-    //            FileOutputStream outputStream = new FileOutputStream(imageFile);
-    //            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-    //            outputStream.flush();
-    //            outputStream.close();
-    //
-    //            MediaStore.Images.Media.insertImage(getContentResolver(),
-    //                    imageFile.getAbsolutePath(), filename, null);
-    //            uri = Uri.fromFile(imageFile);
-    //        } catch (Exception e) {
-    //            Log.e("draw", "Error saving image: " + e.getMessage());
-    //            e.printStackTrace();
-    //        }
-    //
-    //        return uri;
-    //    }
-    //
-    //    private void shareImage(Uri uri) {
-    //        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-    //        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-    //        shareIntent.setType("image/png");
-    //        startActivity(Intent.createChooser(shareIntent, "Share via"));
-    //    }
+    }
+
     private fun cloneButton(e: DragEvent): Button {
         Log.d("Local state", (e.localState as Button).x.toString())
         Log.d("Tools x", tools!!.x.toString())

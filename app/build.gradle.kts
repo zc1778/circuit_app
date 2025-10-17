@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.zybooks.circuitmaker10"
+    namespace = "com.zybooks.circuitmaker"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.zybooks.circuitmaker10"
+        applicationId = "com.zybooks.circuitmaker"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

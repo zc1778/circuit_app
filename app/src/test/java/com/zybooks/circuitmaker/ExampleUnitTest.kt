@@ -1,4 +1,4 @@
-package com.zybooks.circuitmaker10
+package com.zybooks.circuitmaker
 
 import org.junit.Test
 

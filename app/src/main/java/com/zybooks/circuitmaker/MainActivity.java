@@ -24,8 +24,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.mihir.drawingcanvas.drawingView;
-
 import java.io.File;
 import java.io.FileOutputStream;
 
@@ -33,10 +31,10 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int STORAGE_PERMISSION_CODE = 100;
     private View tools;
-    private drawingView draw;
+    private LineView draw;
     private ConstraintLayout circuitView;
-    private ImageButton undo, redo, stroke;
-    private Button clear, save;
+    // private ImageButton undo, redo, stroke;
+    private Button save; //, clear;
     private float buttonX;
     private float buttonY;
 
@@ -51,29 +49,25 @@ public class MainActivity extends AppCompatActivity {
                     STORAGE_PERMISSION_CODE);
         }
 
-//        draw = findViewById(R.id.circuit_view);
+        draw = findViewById(R.id.circuit_view);
 //        undo = findViewById(R.id.undo);
 //        redo = findViewById(R.id.redo);
 //        clear = findViewById(R.id.clean);
-//        save = findViewById(R.id.save);
-//
-//        undo.setOnClickListener(v -> draw.undo());
-//        redo.setOnClickListener(v -> draw.redo());
-//        clear.setOnClickListener(v -> draw.clearDrawingBoard());
-//
-//        save.setOnClickListener(v -> draw.post(() -> {
-//            Bitmap bitmap = getBitmapFromView(draw);
-//            Uri imageUri = saveBitmapToStorage(bitmap);
-//
-//            if (imageUri != null) {
-//                Log.e("draw", "Image saved at: " + imageUri);
-//                Toast.makeText(this, "Image saved!", Toast.LENGTH_SHORT).show();
-//                shareImage(imageUri);
-//            } else {
-//                Log.e("draw", "Saving failed");
-//                Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
-//            }
-//        }));
+        save = findViewById(R.id.save);
+
+        save.setOnClickListener(v -> draw.post(() -> {
+            Bitmap bitmap = getBitmapFromView(draw);
+            Uri imageUri = saveBitmapToStorage(bitmap);
+
+            if (imageUri != null) {
+                Log.e("draw", "Image saved at: " + imageUri);
+                Toast.makeText(this, "Image saved!", Toast.LENGTH_SHORT).show();
+                shareImage(imageUri);
+            } else {
+                Log.e("draw", "Saving failed");
+                Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
+            }
+        }));
 
         tools = findViewById(R.id.circuit_tools);
         ImageButton button = findViewById(R.id.toolBox);
@@ -114,59 +108,59 @@ public class MainActivity extends AppCompatActivity {
 
         circuitView = findViewById(R.id.main);
 
-        onLongClickListener(circuitView, placeholderButton);
-
         // Set drag listener for the View
-        circuitView.setOnDragListener(this::dragListener);
+        onLongClickListenerComponent(circuitView, placeholderButton);
+
+        circuitView.setOnDragListener(this::dragListenerComponent);
     }
 
-//    private Bitmap getBitmapFromView(View view) {
-//        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),
-//                Bitmap.Config.ARGB_8888);
-//        Canvas canvas = new Canvas(bitmap);
-//        if (view.getBackground() != null) {
-//            view.getBackground().draw(canvas);
-//        } else {
-//            canvas.drawColor(Color.WHITE);
-//        }
-//        view.draw(canvas);
-//        return bitmap;
-//    }
-//
-//    private Uri saveBitmapToStorage(Bitmap bitmap) {
-//        String filename = "Drawing " + System.currentTimeMillis() + ".png";
-//        Uri uri = null;
-//
-//        try {
-//            File imagesDir = new File(getExternalFilesDir(null) + "/Pictures/DrawingApp");
-//
-//            if (!imagesDir.exists()) {
-//                imagesDir.mkdirs();
-//            }
-//
-//            File imageFile = new File(imagesDir, filename);
-//            FileOutputStream outputStream = new FileOutputStream(imageFile);
-//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-//            outputStream.flush();
-//            outputStream.close();
-//
-//            MediaStore.Images.Media.insertImage(getContentResolver(),
-//                    imageFile.getAbsolutePath(), filename, null);
-//            uri = Uri.fromFile(imageFile);
-//        } catch (Exception e) {
-//            Log.e("draw", "Error saving image: " + e.getMessage());
-//            e.printStackTrace();
-//        }
-//
-//        return uri;
-//    }
-//
-//    private void shareImage(Uri uri) {
-//        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-//        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-//        shareIntent.setType("image/png");
-//        startActivity(Intent.createChooser(shareIntent, "Share via"));
-//    }
+    private Bitmap getBitmapFromView(View view) {
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        if (view.getBackground() != null) {
+            view.getBackground().draw(canvas);
+        } else {
+            canvas.drawColor(Color.WHITE);
+        }
+        view.draw(canvas);
+        return bitmap;
+    }
+
+    private Uri saveBitmapToStorage(Bitmap bitmap) {
+        String filename = "Drawing " + System.currentTimeMillis() + ".png";
+        Uri uri = null;
+
+        try {
+            File imagesDir = new File(getExternalFilesDir(null) + "/Pictures/DrawingApp");
+
+            if (!imagesDir.exists()) {
+                imagesDir.mkdirs();
+            }
+
+            File imageFile = new File(imagesDir, filename);
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            outputStream.flush();
+            outputStream.close();
+
+            MediaStore.Images.Media.insertImage(getContentResolver(),
+                    imageFile.getAbsolutePath(), filename, null);
+            uri = Uri.fromFile(imageFile);
+        } catch (Exception e) {
+            Log.e("draw", "Error saving image: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return uri;
+    }
+
+    private void shareImage(Uri uri) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+        shareIntent.setType("image/png");
+        startActivity(Intent.createChooser(shareIntent, "Share via"));
+    }
 
     @NonNull
     private Button cloneButton(DragEvent e) {
@@ -183,37 +177,37 @@ public class MainActivity extends AppCompatActivity {
             cloneButton.setTextColor(originalButton.getCurrentTextColor());
             cloneButton.setBackground(originalButton.getBackground());
 
-            onLongClickListener(circuitView, cloneButton);
+            onLongClickListenerComponent(circuitView, cloneButton);
 
             return cloneButton;
         }
         return ((Button) e.getLocalState());
     }
 
-    private void onLongClickListener(View v, Button button) {
+    private void onLongClickListenerComponent(ConstraintLayout circuitView, Button button) {
 
         button.setOnLongClickListener( view -> {
 
             ClipData.Item item = new ClipData.Item((CharSequence) view.getTag());
 
             ClipData dragData = new ClipData(
-                    (CharSequence) view.getTag(),
-                    new String[] {ClipDescription.MIMETYPE_TEXT_PLAIN},
-                    item);
+                (CharSequence) view.getTag(),
+                new String[] {ClipDescription.MIMETYPE_TEXT_PLAIN},
+                item);
 
             View.DragShadowBuilder myShadow = new View.DragShadowBuilder(button);
 
             view.startDragAndDrop(dragData,
-                    myShadow,
-                    view,
-                    0);
+                myShadow,
+                view,
+                0);
 
             return true;
         });
     }
 
     @NonNull
-    private Boolean dragListener(View v, DragEvent e) {
+    private Boolean dragListenerComponent(View v, DragEvent e) {
         // Handle each of the expected events
         switch(e.getAction()) {
 

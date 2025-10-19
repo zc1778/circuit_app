@@ -63,7 +63,7 @@
         app:layout_constraintRight_toRightOf="@id/circuit_tools"
         app:layout_constraintLeft_toLeftOf="@id/circuit_tools" />
 
-    <com.mihir.drawingcanvas.drawingView
+    <com.zybooks.circuitmaker.LineView
         android:id="@+id/circuit_view"
         android:layout_width="0dp"
         android:layout_height="0dp"

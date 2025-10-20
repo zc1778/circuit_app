@@ -9,11 +9,13 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -26,15 +28,28 @@ import androidx.core.content.ContextCompat;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int STORAGE_PERMISSION_CODE = 100;
     private View tools;
+
+    private View toolBar;
     private LineView draw;
+    private ButtonObject isGate;
+    private ButtonObject notGate;
+    private ButtonObject andGate;
+    private ButtonObject nandGate;
+    private ButtonObject orGate;
+    private ButtonObject norGate;
+    private ButtonObject xorGate;
+    private ButtonObject xnorGate;
     private ConstraintLayout circuitView;
     // private ImageButton undo, redo, stroke;
     private Button save; //, clear;
+
+    private ArrayList<Button> components;
     private float buttonX;
     private float buttonY;
 
@@ -49,10 +64,16 @@ public class MainActivity extends AppCompatActivity {
                     STORAGE_PERMISSION_CODE);
         }
 
+        isGate.setType("IS");
+        notGate.setType("NOT");
+        andGate.setType("AND");
+        nandGate.setType("NAND");
+        orGate.setType("OR");
+        norGate.setType("NOR");
+        xorGate.setType("XOR");
+        xnorGate.setType("XNOR");
+
         draw = findViewById(R.id.circuit_view);
-//        undo = findViewById(R.id.undo);
-//        redo = findViewById(R.id.redo);
-//        clear = findViewById(R.id.clean);
         save = findViewById(R.id.save);
 
         save.setOnClickListener(v -> draw.post(() -> {
@@ -69,9 +90,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }));
 
+        toolBar = findViewById(R.id.toolbar);
         tools = findViewById(R.id.circuit_tools);
+
         ImageButton button = findViewById(R.id.toolBox);
         Button placeholderButton = findViewById(R.id.placeholder_button);
+
+        components = new ArrayList<Button>();
 
         button.setOnClickListener(v -> {
             Log.d("BUTTONS", "clicked");
@@ -86,17 +111,14 @@ public class MainActivity extends AppCompatActivity {
             if (toolsVisible == View.VISIBLE) {
                 tools = findViewById(R.id.circuit_tools);
                 tools.setVisibility(View.GONE);
-                if (placeholderButton.getX() < tools.getWidth()) {
-                    placeholderButton.setVisibility(View.GONE);
-                } else {
-                    placeholderButton.setX((float) (buttonX + (tools.getWidth() / 2.0) - 1));
-                    placeholderButton.setY((float) (buttonY - (tools.getHeight() / 2.0) - 1));
+                for (Button b : components) {
+                    b.setX(b.getX() - tools.getWidth());
                 }
+                placeholderButton.setVisibility(View.GONE);
             } else {
                 tools.setVisibility(View.VISIBLE);
-                if (placeholderButton.getX() >= tools.getWidth()) {
-                    placeholderButton.setX((float) (buttonX - (tools.getWidth() / 2.0) + 1));
-                    placeholderButton.setY((float) (buttonY + (tools.getHeight() / 2.0) + 1));
+                for (Button b : components) {
+                    b.setX(b.getX() + tools.getWidth());
                 }
                 placeholderButton.setVisibility(View.VISIBLE);
             }
@@ -116,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Bitmap getBitmapFromView(View view) {
         Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),
-                Bitmap.Config.ARGB_8888);
+            Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         if (view.getBackground() != null) {
             view.getBackground().draw(canvas);
@@ -225,8 +247,6 @@ public class MainActivity extends AppCompatActivity {
 
             case DragEvent.ACTION_DRAG_ENTERED:
 
-                // ((ImageView) v).setColorFilter(Color.GREEN);
-
                 v.invalidate();
 
                 return true;
@@ -248,23 +268,33 @@ public class MainActivity extends AppCompatActivity {
 
                 buttonX = e.getX();
                 buttonY = e.getY();
+
                 Log.d("Drop X position", String.valueOf(buttonX));
                 Log.d("Drop Y position", String.valueOf(buttonY));
 
-                cloneButton.setX(buttonX);
-                cloneButton.setY(buttonY);
+                cloneButton.setX(buttonX - (float) (cloneButton.getWidth() / 2.0));
+                cloneButton.setY(buttonY - (float) (cloneButton.getHeight() / 2.0));
+
+                cloneButton.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        cloneButton.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                        Log.d("Button height: ", String.valueOf(cloneButton.getHeight()));
+                        draw.addConnectionPoint(buttonX - tools.getWidth(), buttonY - toolBar.getHeight() + (float) (cloneButton.getHeight() / 2.0));
+                    }
+                });
+
+                components.add(cloneButton);
 
                 Toast.makeText(this, "Dragged data is " + dragData, Toast.LENGTH_LONG).show();
 
-                // ((ImageView) v).clearColorFilter();
-
                 v.invalidate();
+
 
                 return true;
 
             case DragEvent.ACTION_DRAG_ENDED:
-
-                // ((ImageView) v).clearColorFilter();
 
                 v.invalidate();
 

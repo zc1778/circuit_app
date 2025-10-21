@@ -288,13 +288,10 @@ public class CircuitActivity extends AppCompatActivity {
                             cloneButton.setX(buttonX - cloneButton.getWidth() / 2.0F);
                             cloneButton.setY(buttonY - cloneButton.getHeight() / 2.0F);
 
-                            int[] locations = new int[2];
-                            cloneButton.getLocationOnScreen(locations);
-
                             Log.d("Button height: ", String.valueOf(cloneButton.getHeight()));
-                            Log.d("Connection X: ", String.valueOf(locations[0]));
-                            Log.d("Connection Y: ", String.valueOf(locations[1]));
-                            draw.addConnectionPoint(locations[0], locations[1]);
+                            Log.d("Connection X: ", String.valueOf(cloneButton.getX() - tools.getWidth()));
+                            Log.d("Connection Y: ", String.valueOf(cloneButton.getY() - toolBar.getHeight()));
+                            draw.addInputPoint(cloneButton.getX() - tools.getWidth() + cloneButton.getWidth() / 2.0F, cloneButton.getY() - toolBar.getHeight() + (3.0F * cloneButton.getHeight() / 10.0F) - 10.0F);
                         }
                     });
 

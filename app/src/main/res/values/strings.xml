@@ -3,6 +3,14 @@
     <string name="toolbox">toolbox</string>
     <string name="save_icon">Save Icon</string>
     <string name="placeholder_button">Button</string>
+    <string name="is_gate">YES</string>
+    <string name="not_gate">NOT</string>
+    <string name="and_gate">AND</string>
+    <string name="nand_gate">NAND</string>
+    <string name="or_gate">OR</string>
+    <string name="nor_gate">NOR</string>
+    <string name="xor_gate">XOR</string>
+    <string name="xnor_gate">XNOR</string>
     <string name="clear">Clear</string>
     <string name="save">Save</string>
     <string name="undo">Undo</string>

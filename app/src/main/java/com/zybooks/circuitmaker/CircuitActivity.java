@@ -9,12 +9,12 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -30,26 +30,27 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class CircuitActivity extends AppCompatActivity {
 
     private static final int STORAGE_PERMISSION_CODE = 100;
+    // private final CircuitController controller = new CircuitController();
     private View tools;
 
     private View toolBar;
     private LineView draw;
-    private ButtonObject isGate;
-    private ButtonObject notGate;
-    private ButtonObject andGate;
-    private ButtonObject nandGate;
-    private ButtonObject orGate;
-    private ButtonObject norGate;
-    private ButtonObject xorGate;
-    private ButtonObject xnorGate;
     private ConstraintLayout circuitView;
+    private Button isGate;
+    private ImageButton notGate;
+    private ImageButton andGate;
+    private ImageButton nandGate;
+    private ImageButton orGate;
+    private ImageButton norGate;
+    private ImageButton xorGate;
+    private ImageButton xnorGate;
     // private ImageButton undo, redo, stroke;
     private Button save; //, clear;
-
     private ArrayList<Button> components;
+    private boolean isCloned = false;
     private float buttonX;
     private float buttonY;
 
@@ -61,20 +62,20 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    STORAGE_PERMISSION_CODE);
+                STORAGE_PERMISSION_CODE);
         }
-
-        isGate.setType("IS");
-        notGate.setType("NOT");
-        andGate.setType("AND");
-        nandGate.setType("NAND");
-        orGate.setType("OR");
-        norGate.setType("NOR");
-        xorGate.setType("XOR");
-        xnorGate.setType("XNOR");
 
         draw = findViewById(R.id.circuit_view);
         save = findViewById(R.id.save);
+
+        toolBar = findViewById(R.id.toolbar);
+        tools = findViewById(R.id.circuit_tools);
+
+        components = new ArrayList<Button>();
+        circuitView = findViewById(R.id.main);
+
+        // Set all gate buttons
+        isGate = findViewById(R.id.is_gate);
 
         save.setOnClickListener(v -> draw.post(() -> {
             Bitmap bitmap = getBitmapFromView(draw);
@@ -90,13 +91,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }));
 
-        toolBar = findViewById(R.id.toolbar);
-        tools = findViewById(R.id.circuit_tools);
-
         ImageButton button = findViewById(R.id.toolBox);
-        Button placeholderButton = findViewById(R.id.placeholder_button);
-
-        components = new ArrayList<Button>();
 
         button.setOnClickListener(v -> {
             Log.d("BUTTONS", "clicked");
@@ -109,29 +104,29 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Height of tools container", String.valueOf(tools.getHeight()));
 
             if (toolsVisible == View.VISIBLE) {
-                tools = findViewById(R.id.circuit_tools);
                 tools.setVisibility(View.GONE);
                 for (Button b : components) {
-                    b.setX(b.getX() - tools.getWidth());
+                    b.setX(b.getX() - tools.getWidth() / 2.0F);
+                    b.setY(b.getY() - tools.getHeight() / 2.0F);
                 }
-                placeholderButton.setVisibility(View.GONE);
+                isGate.setVisibility(View.GONE);
             } else {
                 tools.setVisibility(View.VISIBLE);
                 for (Button b : components) {
-                    b.setX(b.getX() + tools.getWidth());
+                    b.setX(b.getX() + tools.getWidth() / 2.0F);
+                    b.setY(b.getY() + tools.getHeight() / 2.0F);
                 }
-                placeholderButton.setVisibility(View.VISIBLE);
+                isGate.setVisibility(View.VISIBLE);
             }
 
             Log.d("Visibility of tools container", String.valueOf(tools.getVisibility()));
-            Log.d("X position of placeholderButton", String.valueOf(placeholderButton.getX()));
-            Log.d("Y position of placeholderButton", String.valueOf(placeholderButton.getY()));
+            Log.d("X position of placeholderButton", String.valueOf(isGate.getX()));
+            Log.d("Y position of placeholderButton", String.valueOf(isGate.getY()));
         });
 
-        circuitView = findViewById(R.id.main);
 
         // Set drag listener for the View
-        onLongClickListenerComponent(circuitView, placeholderButton);
+        onLongClickListenerComponent(circuitView, isGate);
 
         circuitView.setOnDragListener(this::dragListenerComponent);
     }
@@ -190,19 +185,34 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Local state", String.valueOf(((Button) e.getLocalState()).getX()));
         Log.d("Tools x", String.valueOf(tools.getX()));
 
-        if (tools.getWidth() > ((Button) e.getLocalState()).getX()) {
+        if (tools.getWidth() > ((Button) e.getLocalState()).getX() && tools.getVisibility() == View.VISIBLE) {
 
-            Button cloneButton = new Button(MainActivity.this);
+            Button cloneButton = new Button(CircuitActivity.this);
             Button originalButton = ((Button) e.getLocalState());
 
-            cloneButton.setText(originalButton.getText());
-            cloneButton.setTextColor(originalButton.getCurrentTextColor());
+            String imageType = (String) originalButton.getContentDescription();
+
+            switch (imageType) {
+                case "YES":
+                    cloneButton.setContentDescription("YES_CLONE");
+                    break;
+                default:
+                    break;
+            }
+
             cloneButton.setBackground(originalButton.getBackground());
+
+            ViewGroup.LayoutParams params = originalButton.getLayoutParams();
+            cloneButton.setLayoutParams(params);
+
+            cloneButton.setContentDescription("YES_CLONE");
 
             onLongClickListenerComponent(circuitView, cloneButton);
 
+            isCloned = true;
             return cloneButton;
         }
+        isCloned = false;
         return ((Button) e.getLocalState());
     }
 
@@ -261,36 +271,40 @@ public class MainActivity extends AppCompatActivity {
 
                 CharSequence dragData = item.getText();
 
-                Button cloneButton = cloneButton(e);
-                if (cloneButton.getX() <= tools.getX()) {
-                    circuitView.addView(cloneButton);
-                }
-
                 buttonX = e.getX();
                 buttonY = e.getY();
+
+                Button cloneButton = cloneButton(e);
+
+                cloneButton.setX(buttonX - cloneButton.getWidth() / 2.0F);
+                cloneButton.setY(buttonY - cloneButton.getHeight() / 2.0F);
+
+                if (isCloned) {
+                    cloneButton.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            cloneButton.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                            cloneButton.setX(buttonX - cloneButton.getWidth() / 2.0F);
+                            cloneButton.setY(buttonY - cloneButton.getHeight() / 2.0F);
+
+                            Log.d("Button height: ", String.valueOf(cloneButton.getHeight()));
+                            draw.addConnectionPoint(buttonX - tools.getWidth(), buttonY - toolBar.getHeight() + cloneButton.getHeight() / 2.0F);
+                        }
+                    });
+
+                    if (cloneButton.getX() > tools.getX() && tools.getVisibility() == View.VISIBLE) {
+                        circuitView.addView(cloneButton);
+                        components.add(cloneButton);
+                    }
+                }
 
                 Log.d("Drop X position", String.valueOf(buttonX));
                 Log.d("Drop Y position", String.valueOf(buttonY));
 
-                cloneButton.setX(buttonX - (float) (cloneButton.getWidth() / 2.0));
-                cloneButton.setY(buttonY - (float) (cloneButton.getHeight() / 2.0));
-
-                cloneButton.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        cloneButton.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-
-                        Log.d("Button height: ", String.valueOf(cloneButton.getHeight()));
-                        draw.addConnectionPoint(buttonX - tools.getWidth(), buttonY - toolBar.getHeight() + (float) (cloneButton.getHeight() / 2.0));
-                    }
-                });
-
-                components.add(cloneButton);
-
                 Toast.makeText(this, "Dragged data is " + dragData, Toast.LENGTH_LONG).show();
 
                 v.invalidate();
-
 
                 return true;
 

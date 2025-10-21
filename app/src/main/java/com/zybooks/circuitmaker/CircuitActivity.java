@@ -292,6 +292,7 @@ public class CircuitActivity extends AppCompatActivity {
                             Log.d("Connection X: ", String.valueOf(cloneButton.getX() - tools.getWidth()));
                             Log.d("Connection Y: ", String.valueOf(cloneButton.getY() - toolBar.getHeight()));
                             draw.addInputPoint(cloneButton.getX() - tools.getWidth() + cloneButton.getWidth() / 2.0F, cloneButton.getY() - toolBar.getHeight() + (3.0F * cloneButton.getHeight() / 10.0F) - 10.0F);
+                            draw.addOutputPoint(cloneButton.getX() - tools.getWidth() + cloneButton.getWidth() / 2.0F, cloneButton.getY() - toolBar.getHeight() + cloneButton.getHeight() / 2.0F + 10.0F);
                         }
                     });
 

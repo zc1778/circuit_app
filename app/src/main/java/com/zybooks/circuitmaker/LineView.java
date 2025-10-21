@@ -60,15 +60,28 @@ public class LineView extends View {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 currentPath = new Path();
+                float firstX = event.getX(), firstY = event.getY();
+                for (int i = 0; i < outputPoints.size(); i++) {
+                    Log.d("Output Point X: ", outputPoints.get(i).get(0).toString());
+                    Log.d("Output Point Y: ", outputPoints.get(i).get(1).toString());
+                    if (Math.abs(outputPoints.get(i).get(0) - event.getX()) <= 200
+                            && Math.abs(outputPoints.get(i).get(1) - event.getY()) <= 200) {
+                        firstX = outputPoints.get(i).get(0);
+                        firstY = outputPoints.get(i).get(1);
+                    }
+                }
                 pathList.add(currentPath);
-                currentPath.moveTo(event.getX(), event.getY());
-                return true;
+                Log.d("Start Point X: ", String.valueOf(firstX));
+                Log.d("Start Point Y: ", String.valueOf(firstY));
+                Log.d("Event Start Point X: ", String.valueOf(event.getX()));
+                Log.d("Event Start Point Y: ", String.valueOf(event.getY()));
+                currentPath.moveTo(firstX, firstY);
+                break;
             case MotionEvent.ACTION_UP:
-                boolean connection = false;
                 float nextX = event.getX(), nextY = event.getY();
                 for (int i = 0; i < inputPoints.size(); i++) {
-                    Log.d("Connection Point X: ", (inputPoints.get(i).get(0).toString()));
-                    Log.d("Connection Point Y: ", (inputPoints.get(i).get(1)).toString());
+                    Log.d("Input Point X: ", (inputPoints.get(i).get(0).toString()));
+                    Log.d("Input Point Y: ", (inputPoints.get(i).get(1)).toString());
                     if (Math.abs(inputPoints.get(i).get(0) - event.getX()) <= 100
                         && Math.abs(inputPoints.get(i).get(1) - event.getY()) <= 100) {
                         nextX = inputPoints.get(i).get(0);
@@ -77,8 +90,8 @@ public class LineView extends View {
                 }
                 Log.d("End Point X: ", String.valueOf(nextX));
                 Log.d("End Point Y: ", String.valueOf(nextY));
-                Log.d("Event Point X: ", String.valueOf(event.getX()));
-                Log.d("Event Point Y: ", String.valueOf(event.getY()));
+                Log.d("Event End Point X: ", String.valueOf(event.getX()));
+                Log.d("Event End Point Y: ", String.valueOf(event.getY()));
                 currentPath.lineTo(nextX, nextY);
                 break;
             default:

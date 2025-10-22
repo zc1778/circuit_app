@@ -183,29 +183,16 @@ public class CircuitActivity extends AppCompatActivity {
     private Button cloneButton(DragEvent e) {
 
         Log.d("Local state", String.valueOf(((Button) e.getLocalState()).getX()));
-        Log.d("Tools x", String.valueOf(tools.getX()));
+        Log.d("Drag position X: ", String.valueOf(e.getX()));
+        Log.d("Tools x", String.valueOf(tools.getWidth()));
+        Log.d("Content Description: ", ((Button) e.getLocalState()).getContentDescription().toString());
+        String desc = ((Button) e.getLocalState()).getContentDescription().toString();
 
-        if (tools.getWidth() > ((Button) e.getLocalState()).getX() && tools.getVisibility() == View.VISIBLE) {
+        if (tools.getWidth() > ((Button) e.getLocalState()).getX()
+            && tools.getVisibility() == View.VISIBLE
+            && desc.equals("YES")) {
 
-            Button cloneButton = new Button(CircuitActivity.this);
-            Button originalButton = ((Button) e.getLocalState());
-
-            String imageType = (String) originalButton.getContentDescription();
-
-            switch (imageType) {
-                case "YES":
-                    cloneButton.setContentDescription("YES_CLONE");
-                    break;
-                default:
-                    break;
-            }
-
-            cloneButton.setBackground(originalButton.getBackground());
-
-            ViewGroup.LayoutParams params = originalButton.getLayoutParams();
-            cloneButton.setLayoutParams(params);
-
-            cloneButton.setContentDescription("YES_CLONE");
+            Button cloneButton = getButton(e);
 
             onLongClickListenerComponent(circuitView, cloneButton);
 
@@ -214,6 +201,30 @@ public class CircuitActivity extends AppCompatActivity {
         }
         isCloned = false;
         return ((Button) e.getLocalState());
+    }
+
+    @NonNull
+    private Button getButton(DragEvent e) {
+        Button cloneButton = new Button(CircuitActivity.this);
+        Button originalButton = ((Button) e.getLocalState());
+
+        String imageType = (String) originalButton.getContentDescription();
+
+        switch (imageType) {
+            case "YES":
+                cloneButton.setContentDescription("YES_CLONE");
+                break;
+            default:
+                break;
+        }
+
+        cloneButton.setBackground(originalButton.getBackground());
+
+        ViewGroup.LayoutParams params = originalButton.getLayoutParams();
+        cloneButton.setLayoutParams(params);
+
+        cloneButton.setContentDescription("YES_CLONE");
+        return cloneButton;
     }
 
     private void onLongClickListenerComponent(ConstraintLayout circuitView, Button button) {
@@ -280,6 +291,7 @@ public class CircuitActivity extends AppCompatActivity {
                 cloneButton.setY(buttonY - cloneButton.getHeight() / 2.0F);
 
                 if (isCloned) {
+
                     cloneButton.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                         @Override
                         public void onGlobalLayout() {

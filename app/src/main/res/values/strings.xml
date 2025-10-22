@@ -15,4 +15,6 @@
     <string name="save">Save</string>
     <string name="undo">Undo</string>
     <string name="redo">Redo</string>
+    <string name="loginEmail">Email</string>
+    <string name="loginPass">Password</string>
 </resources>

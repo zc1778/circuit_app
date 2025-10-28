@@ -224,6 +224,9 @@ public class CircuitActivity extends AppCompatActivity {
             case "YES":
                 cloneButton.setContentDescription("YES_CLONE");
                 break;
+            case "NOT":
+                cloneButton.setContentDescription("NOT_CLONE");
+                break;
             default:
                 break;
         }

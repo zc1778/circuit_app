@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "686483056803",
+    "project_id": "circuitmaker-62533",
+    "storage_bucket": "circuitmaker-62533.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:686483056803:android:494cd03ed9275783d9f716",
+        "android_client_info": {
+          "package_name": "com.zybooks.circuitmaker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMrtZrX3QsSEotipUTvhAfCzazAQhNuxM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

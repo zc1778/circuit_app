@@ -2,8 +2,12 @@ package com.zybooks.circuitmaker;
 
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.Firebase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
     @Override
@@ -21,5 +25,17 @@ public class LoginActivity extends AppCompatActivity {
         registerButton.setOnClickListener( v -> {
             // register logic
         });
+    }
+
+    void loginCheck() {
+        EditText emailInput = (EditText) findViewById(R.id.loginEmail);
+        EditText passwordInput = (EditText) findViewById(R.id.loginPassword);
+    }
+
+    void registerUser() {
+        EditText emailInput = (EditText) findViewById(R.id.loginEmail);
+        EditText passwordInput = (EditText) findViewById(R.id.loginPassword);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
     }
 }

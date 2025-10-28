@@ -20,11 +20,15 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -57,7 +61,13 @@ public class CircuitActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             != PackageManager.PERMISSION_GRANTED) {
@@ -303,8 +313,8 @@ public class CircuitActivity extends AppCompatActivity {
                             Log.d("Button height: ", String.valueOf(cloneButton.getHeight()));
                             Log.d("Connection X: ", String.valueOf(cloneButton.getX() - tools.getWidth()));
                             Log.d("Connection Y: ", String.valueOf(cloneButton.getY() - toolBar.getHeight()));
-                            draw.addInputPoint(cloneButton.getX() - tools.getWidth() + cloneButton.getWidth() / 2.0F, cloneButton.getY() - toolBar.getHeight() + (3.0F * cloneButton.getHeight() / 10.0F) - 10.0F);
-                            draw.addOutputPoint(cloneButton.getX() - tools.getWidth() + cloneButton.getWidth() / 2.0F, cloneButton.getY() - toolBar.getHeight() + cloneButton.getHeight() / 2.0F + 10.0F);
+                            draw.addInputPoint(cloneButton.getX() - tools.getWidth() + 5.0F, cloneButton.getY() - toolBar.getHeight() - cloneButton.getHeight() / 2.0F + (cloneButton.getHeight() / 5.0F));
+                            draw.addOutputPoint(cloneButton.getX() - tools.getWidth() + cloneButton.getWidth() - 5.0F, cloneButton.getY() - toolBar.getHeight() - cloneButton.getHeight() / 2.0F + (cloneButton.getHeight() / 5.0F));
                         }
                     });
 

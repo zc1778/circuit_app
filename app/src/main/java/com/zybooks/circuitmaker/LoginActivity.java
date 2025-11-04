@@ -6,6 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -47,5 +51,51 @@ public class LoginActivity extends AppCompatActivity {
             EditText passwordInput = (EditText) findViewById(R.id.loginPassword);
             registerUser(emailInput.getText().toString(), passwordInput.getText().toString());
         });
+    }
+
+    public void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null){
+            //idk
+        }
+    }
+
+    void loginCheck(String email, String password) {
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Intent myIntent = new Intent(LoginActivity.this, CircuitActivity.class);
+                            startActivity(myIntent);
+                            Toast toast = Toast.makeText(LoginActivity.this /* MyActivity */, "Login Sucess", Toast.LENGTH_LONG);
+                            toast.show();
+                        } else {
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                        }
+                    }
+                });
+    }
+
+    void registerUser(String email, String password) {
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "createUserWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Intent myIntent = new Intent(LoginActivity.this, CircuitActivity.class);
+                            startActivity(myIntent);
+                            Toast toast = Toast.makeText(LoginActivity.this /* MyActivity */, "Registration Sucess", Toast.LENGTH_LONG);
+                            toast.show();
+                        } else {
+                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                        }
+                    }
+                });
     }
 }

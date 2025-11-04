@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -47,5 +49,11 @@ public class LoginActivity extends AppCompatActivity {
             EditText passwordInput = (EditText) findViewById(R.id.loginPassword);
             registerUser(emailInput.getText().toString(), passwordInput.getText().toString());
         });
+    }
+
+    private void registerUser(String string, String string1) {
+    }
+
+    private void loginCheck(String string, String string1) {
     }
 }

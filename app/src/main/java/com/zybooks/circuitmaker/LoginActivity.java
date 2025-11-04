@@ -2,6 +2,7 @@ package com.zybooks.circuitmaker;
 
 import static android.content.ContentValues.TAG;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -68,6 +69,10 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            Intent myIntent = new Intent(LoginActivity.this, CircuitActivity.class);
+                            startActivity(myIntent);
+                            Toast toast = Toast.makeText(LoginActivity.this /* MyActivity */, "Login Sucess", Toast.LENGTH_LONG);
+                            toast.show();
                         } else {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                         }
@@ -83,6 +88,10 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            Intent myIntent = new Intent(LoginActivity.this, CircuitActivity.class);
+                            startActivity(myIntent);
+                            Toast toast = Toast.makeText(LoginActivity.this /* MyActivity */, "Registration Sucess", Toast.LENGTH_LONG);
+                            toast.show();
                         } else {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                         }

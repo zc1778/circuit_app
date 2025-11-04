@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
@@ -43,14 +44,14 @@ public class CircuitActivity extends AppCompatActivity {
     private View toolBar;
     private LineView draw;
     private ConstraintLayout circuitView;
-    private Button isGate;
-    private ImageButton notGate;
-    private ImageButton andGate;
-    private ImageButton nandGate;
-    private ImageButton orGate;
-    private ImageButton norGate;
-    private ImageButton xorGate;
-    private ImageButton xnorGate;
+    private GateModel isGate;
+    private GateModel notGate;
+    private GateModel andGate;
+    private GateModel nandGate;
+    private GateModel orGate;
+    private GateModel norGate;
+    private GateModel xorGate;
+    private GateModel xnorGate;
     // private ImageButton undo, redo, stroke;
     private Button save; //, clear;
     private ArrayList<Button> components;
@@ -190,7 +191,7 @@ public class CircuitActivity extends AppCompatActivity {
     }
 
     @NonNull
-    private Button cloneButton(DragEvent e) {
+    private GateModel cloneGate(DragEvent e) {
 
         Log.d("Local state", String.valueOf(((Button) e.getLocalState()).getX()));
         Log.d("Drag position X: ", String.valueOf(e.getX()));
@@ -202,47 +203,47 @@ public class CircuitActivity extends AppCompatActivity {
             && tools.getVisibility() == View.VISIBLE
             && desc.equals("YES")) {
 
-            Button cloneButton = getButton(e);
+            GateModel cloneGate = getGate(e);
 
-            onLongClickListenerComponent(circuitView, cloneButton);
+            onLongClickListenerComponent(circuitView, cloneGate);
 
             isCloned = true;
-            return cloneButton;
+            return cloneGate;
         }
         isCloned = false;
-        return ((Button) e.getLocalState());
+        return ((GateModel) e.getLocalState());
     }
 
     @NonNull
-    private Button getButton(DragEvent e) {
-        Button cloneButton = new Button(CircuitActivity.this);
-        Button originalButton = ((Button) e.getLocalState());
+    private GateModel getGate(DragEvent e) {
+        GateModel cloneGate = new GateModel(CircuitActivity.this);
+        GateModel originalGate = ((GateModel) e.getLocalState());
 
-        String imageType = (String) originalButton.getContentDescription();
+        String imageType = (String) originalGate.getContentDescription();
 
         switch (imageType) {
             case "YES":
-                cloneButton.setContentDescription("YES_CLONE");
+                cloneGate.setContentDescription("YES_CLONE");
                 break;
             case "NOT":
-                cloneButton.setContentDescription("NOT_CLONE");
+                cloneGate.setContentDescription("NOT_CLONE");
                 break;
             default:
                 break;
         }
 
-        cloneButton.setBackground(originalButton.getBackground());
+        cloneGate.setBackground(originalGate.getBackground());
 
-        ViewGroup.LayoutParams params = originalButton.getLayoutParams();
-        cloneButton.setLayoutParams(params);
+        ViewGroup.LayoutParams params = originalGate.getLayoutParams();
+        cloneGate.setLayoutParams(params);
 
-        cloneButton.setContentDescription("YES_CLONE");
-        return cloneButton;
+        cloneGate.setContentDescription("YES_CLONE");
+        return cloneGate;
     }
 
-    private void onLongClickListenerComponent(ConstraintLayout circuitView, Button button) {
+    private void onLongClickListenerComponent(ConstraintLayout circuitView, GateModel gate) {
 
-        button.setOnLongClickListener( view -> {
+        gate.setOnLongClickListener( view -> {
 
             ClipData.Item item = new ClipData.Item((CharSequence) view.getTag());
 
@@ -251,7 +252,7 @@ public class CircuitActivity extends AppCompatActivity {
                 new String[] {ClipDescription.MIMETYPE_TEXT_PLAIN},
                 item);
 
-            View.DragShadowBuilder myShadow = new View.DragShadowBuilder(button);
+            View.DragShadowBuilder myShadow = new View.DragShadowBuilder(gate);
 
             view.startDragAndDrop(dragData,
                 myShadow,
@@ -298,32 +299,32 @@ public class CircuitActivity extends AppCompatActivity {
                 buttonX = e.getX();
                 buttonY = e.getY();
 
-                Button cloneButton = cloneButton(e);
+                GateModel cloneGate = cloneGate(e);
 
-                cloneButton.setX(buttonX - cloneButton.getWidth() / 2.0F);
-                cloneButton.setY(buttonY - cloneButton.getHeight() / 2.0F);
+                cloneGate.setX(buttonX - cloneGate.getWidth() / 2.0F);
+                cloneGate.setY(buttonY - cloneGate.getHeight() / 2.0F);
 
                 if (isCloned) {
 
-                    cloneButton.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    cloneGate.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                         @Override
                         public void onGlobalLayout() {
-                            cloneButton.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            cloneGate.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
-                            cloneButton.setX(buttonX - cloneButton.getWidth() / 2.0F);
-                            cloneButton.setY(buttonY - cloneButton.getHeight() / 2.0F);
+                            cloneGate.setX(buttonX - cloneGate.getWidth() / 2.0F);
+                            cloneGate.setY(buttonY - cloneGate.getHeight() / 2.0F);
 
-                            Log.d("Button height: ", String.valueOf(cloneButton.getHeight()));
-                            Log.d("Connection X: ", String.valueOf(cloneButton.getX() - tools.getWidth()));
-                            Log.d("Connection Y: ", String.valueOf(cloneButton.getY() - toolBar.getHeight()));
-                            draw.addInputPoint(cloneButton.getX() - tools.getWidth() + 5.0F, cloneButton.getY() - toolBar.getHeight() - cloneButton.getHeight() / 2.0F + (cloneButton.getHeight() / 5.0F));
-                            draw.addOutputPoint(cloneButton.getX() - tools.getWidth() + cloneButton.getWidth() - 5.0F, cloneButton.getY() - toolBar.getHeight() - cloneButton.getHeight() / 2.0F + (cloneButton.getHeight() / 5.0F));
+                            Log.d("Button height: ", String.valueOf(cloneGate.getHeight()));
+                            Log.d("Connection X: ", String.valueOf(cloneGate.getX() - tools.getWidth()));
+                            Log.d("Connection Y: ", String.valueOf(cloneGate.getY() - toolBar.getHeight()));
+                            draw.addInputPoint(cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F));
+                            draw.addOutputPoint(cloneGate.getX() - tools.getWidth() + cloneGate.getWidth() - 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F));
                         }
                     });
 
-                    if (cloneButton.getX() > tools.getX() && tools.getVisibility() == View.VISIBLE) {
-                        circuitView.addView(cloneButton);
-                        components.add(cloneButton);
+                    if (cloneGate.getX() > tools.getX() && tools.getVisibility() == View.VISIBLE) {
+                        circuitView.addView(cloneGate);
+                        components.add(cloneGate);
                     }
                 }
 

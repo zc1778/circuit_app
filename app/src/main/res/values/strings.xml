@@ -17,4 +17,6 @@
     <string name="redo">Redo</string>
     <string name="loginEmail">Email</string>
     <string name="loginPass">Password</string>
+    <string name="verifyHead">A verification link has been sent to your email.</string>
+    <string name="verifyButton">Continue</string>
 </resources>

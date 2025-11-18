@@ -31,16 +31,20 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CircuitActivity extends AppCompatActivity {
 
     private static final int STORAGE_PERMISSION_CODE = 100;
     // private final CircuitController controller = new CircuitController();
     private FirebaseUser user;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private View tools;
     private View toolBar;
     private LineView draw;
@@ -59,6 +63,7 @@ public class CircuitActivity extends AppCompatActivity {
     private boolean isCloned = false;
     private float buttonX;
     private float buttonY;
+    private ArrayList<GateModel> gateList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +103,9 @@ public class CircuitActivity extends AppCompatActivity {
         isGate = findViewById(R.id.is_gate);
 
         save.setOnClickListener(v -> draw.post(() -> {
-            Bitmap bitmap = getBitmapFromView(draw);
+            saveGateDataToDatabase();
+
+            /*Bitmap bitmap = getBitmapFromView(draw);
             Uri imageUri = saveBitmapToStorage(bitmap);
 
             if (imageUri != null) {
@@ -108,7 +115,7 @@ public class CircuitActivity extends AppCompatActivity {
             } else {
                 Log.e("draw", "Saving failed");
                 Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
-            }
+            }*/
         }));
 
         ImageButton button = findViewById(R.id.toolBox);
@@ -309,6 +316,7 @@ public class CircuitActivity extends AppCompatActivity {
                 buttonY = e.getY();
 
                 GateModel cloneGate = cloneGate(e);
+                gateList.add(cloneGate);
 
                 cloneGate.setX(buttonX - cloneGate.getWidth() / 2.0F);
                 cloneGate.setY(buttonY - cloneGate.getHeight() / 2.0F);
@@ -365,5 +373,15 @@ public class CircuitActivity extends AppCompatActivity {
         }
 
         return false;
+    }
+
+    void saveGateDataToDatabase() {
+        Map<String, Object> gateMap = new HashMap<>();
+        for(int i = 0; i < gateList.size(); i++) {
+            gateMap.put("x location", gateList.get(i).getX());
+            gateMap.put("y location", gateList.get(i).getY());
+            db.collection("gates").add(gateMap);
+            gateMap.clear();
+        }
     }
 }

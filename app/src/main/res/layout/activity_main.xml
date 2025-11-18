@@ -75,6 +75,16 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         app:layout_constraintVertical_bias="1.0" />
 
+<!--    <com.zybooks.circuitmaker.GateModel-->
+<!--        android:id="@+id/circuit_source"-->
+<!--        android:layout_width="80dp"-->
+<!--        android:layout_height="60dp"-->
+<!--        android:contentDescription="@string/source"-->
+<!--        android:background="@drawable/yes"-->
+<!--        app:layout_constraintLeft_toLeftOf="@id/circuit_view"-->
+<!--        app:layout_constraintTop_toTopOf="@id/circuit_view"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/circuit_view" />-->
+
     <ImageButton
         android:id="@+id/undo"
         android:layout_width="wrap_content"

@@ -1,5 +1,5 @@
 [versions]
-agp = "8.13.0"
+agp = "8.13.1"
 firebaseAuthKtx = "23.2.1"
 firebaseBom = "34.4.0"
 firebaseFirestoreKtx = "25.1.4"

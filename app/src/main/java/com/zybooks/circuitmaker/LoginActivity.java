@@ -91,7 +91,6 @@ public class LoginActivity extends AppCompatActivity {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                         }
                     }
-                }
             });
     }
 }

@@ -34,7 +34,6 @@ public class VerificationActivity extends AppCompatActivity {
     void emailCheck() {
         FirebaseUser user = mAuth.getCurrentUser();
         user.reload();
-        Log.d("TAG", "VALUUUEEEEE: " + user.isEmailVerified());
         if(user.isEmailVerified()) {
             Intent myIntent = new Intent(VerificationActivity.this, CircuitActivity.class);
             startActivity(myIntent);

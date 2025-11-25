@@ -80,18 +80,16 @@ public class LoginActivity extends AppCompatActivity {
 
     void registerUser(String email, String password) {
         mAuth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        Log.d(TAG, "createUserWithEmail:success");
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        Intent myIntent = new Intent(LoginActivity.this, CircuitActivity.class);
-                        startActivity(myIntent);
-                        Toast toast = Toast.makeText(LoginActivity.this /* MyActivity */, "Registration Sucess", Toast.LENGTH_LONG);
-                        toast.show();
-                    } else {
-                        Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "createUserWithEmail:success");
+                            Intent myIntent = new Intent(LoginActivity.this, VerificationActivity.class);
+                            startActivity(myIntent);
+                        } else {
+                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                        }
                     }
                 }
             });

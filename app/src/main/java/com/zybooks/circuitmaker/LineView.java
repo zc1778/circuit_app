@@ -42,7 +42,7 @@ public class LineView extends View {
         gateEdges = new HashMap<String, ArrayList<String>>();
         currentPath = new Path();
         paint.setColor(Color.argb(1.0F, 0.0F, 0.0F, 0.0F));
-        paint.setStrokeWidth(5);
+        paint.setStrokeWidth(8);
         paint.setStyle(Paint.Style.STROKE);
     }
 
@@ -53,6 +53,7 @@ public class LineView extends View {
         currentPath.reset();
 
         for (String gateName : gateEdges.keySet()) {
+            Log.d("Gate Name: ", gateName);
             ArrayList<String> edges = gateEdges.get(gateName);
             assert edges != null;
             for (String edge : edges) {

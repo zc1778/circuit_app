@@ -35,6 +35,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class CircuitActivity extends AppCompatActivity {
 
@@ -230,33 +231,34 @@ public class CircuitActivity extends AppCompatActivity {
         GateModel originalGate = ((GateModel) e.getLocalState());
         cloneGate.setCloneNumber(originalGate.getCloneNumber());
         originalGate.incrementCloneNumber();
+        Log.d("Clone Number: ", String.valueOf(cloneGate.getCloneNumber()));
 
         String imageType = (String) originalGate.getContentDescription();
 
         switch (imageType) {
             case "YES":
-                cloneGate.setContentDescription(String.format("YES_CLONE_%1d", cloneGate.getCloneNumber()));
+                cloneGate.setContentDescription(String.format(Locale.getDefault(), "YES_CLONE_%d", cloneGate.getCloneNumber()));
                 break;
             case "NOT":
-                cloneGate.setContentDescription(String.format("NOT_CLONE_%1d", cloneGate.getCloneNumber()));
+                cloneGate.setContentDescription(String.format(Locale.getDefault(), "NOT_CLONE_%d", cloneGate.getCloneNumber()));
                 break;
             case "AND":
-                cloneGate.setContentDescription(String.format("AND_CLONE_%1d", cloneGate.getCloneNumber()));
+                cloneGate.setContentDescription(String.format(Locale.getDefault(), "AND_CLONE_%d", cloneGate.getCloneNumber()));
                 break;
             case "NAND":
-                cloneGate.setContentDescription(String.format("NAND_CLONE_%1d", cloneGate.getCloneNumber()));
+                cloneGate.setContentDescription(String.format(Locale.getDefault(), "NAND_CLONE_%d", cloneGate.getCloneNumber()));
                 break;
             case "OR":
-                cloneGate.setContentDescription(String.format("OR_CLONE_%1d", cloneGate.getCloneNumber()));
+                cloneGate.setContentDescription(String.format(Locale.getDefault(), "OR_CLONE_%d", cloneGate.getCloneNumber()));
                 break;
             case "NOR":
-                cloneGate.setContentDescription(String.format("NOR_CLONE_%1d", cloneGate.getCloneNumber()));
+                cloneGate.setContentDescription(String.format(Locale.getDefault(), "NOR_CLONE_%d", cloneGate.getCloneNumber()));
                 break;
             case "XOR":
-                cloneGate.setContentDescription(String.format("XOR_CLONE_%1d", cloneGate.getCloneNumber()));
+                cloneGate.setContentDescription(String.format(Locale.getDefault(), "XOR_CLONE_%d", cloneGate.getCloneNumber()));
                 break;
             case "XNOR":
-                cloneGate.setContentDescription(String.format("XNOR_CLONE_%1d", cloneGate.getCloneNumber()));
+                cloneGate.setContentDescription(String.format(Locale.getDefault(), "XNOR_CLONE_%d", cloneGate.getCloneNumber()));
                 break;
             default:
                 Log.e("draw", "Unknown gate type");

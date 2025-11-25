@@ -64,6 +64,90 @@
         app:layout_constraintRight_toRightOf="@id/circuit_tools"
         app:layout_constraintLeft_toLeftOf="@id/circuit_tools" />
 
+    <com.zybooks.circuitmaker.GateModel
+        android:id="@+id/not_gate"
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        android:contentDescription="@string/not_gate"
+        android:visibility="gone"
+        android:background="@drawable/not"
+        app:layout_constraintTop_toBottomOf="@id/is_gate"
+        app:layout_constraintRight_toRightOf="@id/circuit_tools"
+        app:layout_constraintLeft_toLeftOf="@id/circuit_tools" />
+
+    <com.zybooks.circuitmaker.GateModel
+        android:id="@+id/and_gate"
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        android:contentDescription="@string/and_gate"
+        android:visibility="gone"
+        android:background="@drawable/and"
+        app:layout_constraintTop_toBottomOf="@id/not_gate"
+        app:layout_constraintRight_toRightOf="@id/circuit_tools"
+        app:layout_constraintLeft_toLeftOf="@id/circuit_tools" />
+
+    <com.zybooks.circuitmaker.GateModel
+        android:id="@+id/nand_gate"
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        android:contentDescription="@string/nand_gate"
+        android:visibility="gone"
+        android:background="@drawable/nand"
+        app:layout_constraintTop_toBottomOf="@id/and_gate"
+        app:layout_constraintRight_toRightOf="@id/circuit_tools"
+        app:layout_constraintLeft_toLeftOf="@id/circuit_tools" />
+
+    <com.zybooks.circuitmaker.GateModel
+        android:id="@+id/or_gate"
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        android:contentDescription="@string/or_gate"
+        android:visibility="gone"
+        android:background="@drawable/or"
+        app:layout_constraintTop_toBottomOf="@id/nand_gate"
+        app:layout_constraintRight_toRightOf="@id/circuit_tools"
+        app:layout_constraintLeft_toLeftOf="@id/circuit_tools" />
+
+    <com.zybooks.circuitmaker.GateModel
+        android:id="@+id/nor_gate"
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        android:contentDescription="@string/nor_gate"
+        android:visibility="gone"
+        android:background="@drawable/nor"
+        app:layout_constraintTop_toBottomOf="@id/or_gate"
+        app:layout_constraintRight_toRightOf="@id/circuit_tools"
+        app:layout_constraintLeft_toLeftOf="@id/circuit_tools" />
+
+    <com.zybooks.circuitmaker.GateModel
+        android:id="@+id/xor_gate"
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        android:contentDescription="@string/xor_gate"
+        android:visibility="gone"
+        android:background="@drawable/xor"
+        app:layout_constraintTop_toBottomOf="@id/nor_gate"
+        app:layout_constraintRight_toRightOf="@id/circuit_tools"
+        app:layout_constraintLeft_toLeftOf="@id/circuit_tools" />
+
+    <com.zybooks.circuitmaker.GateModel
+        android:id="@+id/xnor_gate"
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        android:contentDescription="@string/xnor_gate"
+        android:visibility="gone"
+        android:background="@drawable/xnor"
+        app:layout_constraintTop_toBottomOf="@id/xor_gate"
+        app:layout_constraintRight_toRightOf="@id/circuit_tools"
+        app:layout_constraintLeft_toLeftOf="@id/circuit_tools" />
+
     <com.zybooks.circuitmaker.LineView
         android:id="@+id/circuit_view"
         android:layout_width="0dp"

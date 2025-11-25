@@ -59,7 +59,6 @@ public class LineView extends View {
             for (String edge : edges) {
                 boolean outputStatus = Objects.requireNonNull(gateMap.get(gateName)).getOutputStatus();
                 if (outputStatus) {
-                    currentPath.moveTo(Objects.requireNonNull(gateMap.get(gateName)).getOutputPoint()[0], Objects.requireNonNull(gateMap.get(gateName)).getOutputPoint()[1]);
 
                     ArrayList<Float[]> inputPoints = Objects.requireNonNull(gateMap.get(edge)).getInputPoints();
                     ArrayList<Boolean> inputStatus = Objects.requireNonNull(gateMap.get(edge)).getInputStatus();
@@ -71,6 +70,7 @@ public class LineView extends View {
                         Log.d("Input Point Y: ", String.valueOf(inputPoints.get(i)[1]));
 
                         if (inputStatus.get(i)) {
+                            currentPath.moveTo(Objects.requireNonNull(gateMap.get(gateName)).getOutputPoint()[0], Objects.requireNonNull(gateMap.get(gateName)).getOutputPoint()[1]);
                             currentPath.lineTo(Objects.requireNonNull(inputPoints.get(i)[0]), Objects.requireNonNull(inputPoints.get(i)[1]));
                         }
                         canvas.drawPath(currentPath, paint);
@@ -128,7 +128,7 @@ public class LineView extends View {
                                 && (point[0] > 0.0F && point[1] > 0.0F)) {
                             nextX = point[0];
                             nextY = point[1];
-                            firstGate = !(gate.getY() - gate.getHeight() / 2.0F <= nextY);
+                            firstGate = nextY <= event.getY();
                             closestIn = Math.abs(point[0] - event.getX()) + Math.abs(point[1] - event.getY());
                             closestInGate = gate;
                         }

@@ -98,6 +98,13 @@ public class CircuitActivity extends AppCompatActivity {
 
         // Set all gate buttons
         isGate = findViewById(R.id.is_gate);
+        notGate = findViewById(R.id.not_gate);
+        andGate = findViewById(R.id.and_gate);
+        nandGate = findViewById(R.id.nand_gate);
+        orGate = findViewById(R.id.or_gate);
+        norGate = findViewById(R.id.nor_gate);
+        xorGate = findViewById(R.id.xor_gate);
+        xnorGate = findViewById(R.id.xnor_gate);
 
         save.setOnClickListener(v -> draw.post(() -> {
             Bitmap bitmap = getBitmapFromView(draw);
@@ -132,6 +139,13 @@ public class CircuitActivity extends AppCompatActivity {
                     b.setY(b.getY() - tools.getHeight() / 2.0F);
                 }
                 isGate.setVisibility(View.GONE);
+                notGate.setVisibility(View.GONE);
+                andGate.setVisibility(View.GONE);
+                nandGate.setVisibility(View.GONE);
+                orGate.setVisibility(View.GONE);
+                norGate.setVisibility(View.GONE);
+                xorGate.setVisibility(View.GONE);
+                xnorGate.setVisibility(View.GONE);
             } else {
                 tools.setVisibility(View.VISIBLE);
                 for (Button b : components) {
@@ -139,16 +153,28 @@ public class CircuitActivity extends AppCompatActivity {
                     b.setY(b.getY() + tools.getHeight() / 2.0F);
                 }
                 isGate.setVisibility(View.VISIBLE);
+                notGate.setVisibility(View.VISIBLE);
+                andGate.setVisibility(View.VISIBLE);
+                nandGate.setVisibility(View.VISIBLE);
+                orGate.setVisibility(View.VISIBLE);
+                norGate.setVisibility(View.VISIBLE);
+                xorGate.setVisibility(View.VISIBLE);
+                xnorGate.setVisibility(View.VISIBLE);
             }
 
             Log.d("Visibility of tools container", String.valueOf(tools.getVisibility()));
-            Log.d("X position of placeholderButton", String.valueOf(isGate.getX()));
-            Log.d("Y position of placeholderButton", String.valueOf(isGate.getY()));
         });
 
 
         // Set drag listener for the View
         onLongClickListenerComponent(circuitView, isGate);
+        onLongClickListenerComponent(circuitView, notGate);
+        onLongClickListenerComponent(circuitView, andGate);
+        onLongClickListenerComponent(circuitView, nandGate);
+        onLongClickListenerComponent(circuitView, orGate);
+        onLongClickListenerComponent(circuitView, norGate);
+        onLongClickListenerComponent(circuitView, xorGate);
+        onLongClickListenerComponent(circuitView, xnorGate);
 
         circuitView.setOnDragListener(this::dragListenerComponent);
     }
@@ -212,7 +238,7 @@ public class CircuitActivity extends AppCompatActivity {
 
         if (tools.getWidth() > ((Button) e.getLocalState()).getX()
             && tools.getVisibility() == View.VISIBLE
-            && desc.equals("YES")) {
+            && !desc.contains("CLONE")) {
 
             GateModel cloneGate = getGate(e);
 
@@ -350,27 +376,27 @@ public class CircuitActivity extends AppCompatActivity {
                             Log.d("Button height: ", String.valueOf(cloneGate.getHeight()));
                             Log.d("Connection X: ", String.valueOf(cloneGate.getX() - tools.getWidth() + 5.0F));
                             Log.d("Connection Y: ", String.valueOf(cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)));
-                            if (cloneGate.getContentDescription().toString().contains("YES")) {
+                            if (cloneGate.getContentDescription().toString().contains("YES") || cloneGate.getContentDescription().toString().contains("NOT")) {
                                 cloneGate.setInputPoints(0, new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)});
                             } else {
-                                cloneGate.setInputPoints(1, new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (3 * cloneGate.getHeight() / 10.0F)});
-                                cloneGate.setInputPoints(0, new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (7 * cloneGate.getHeight() / 10.0F)});
+                                cloneGate.setInputPoints(0, new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (2 * cloneGate.getHeight() / 5.0F)});
+                                cloneGate.setInputPoints(1, new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F});
                             }
                             cloneGate.setOutputPoint(new Float[]{cloneGate.getX() - tools.getWidth() + cloneGate.getWidth() - 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)});
                         }
                     });
 
-                    if (cloneGate.getX() > tools.getX() && tools.getVisibility() == View.VISIBLE) {
+                    if (cloneGate.getX() > tools.getWidth() && tools.getVisibility() == View.VISIBLE) {
                         circuitView.addView(cloneGate);
                         components.add(cloneGate);
                         draw.addGate(cloneGate);
                     }
                 } else {
-                    if (cloneGate.getContentDescription().toString().contains("YES_CLONE")) {
+                    if (cloneGate.getContentDescription().toString().contains("YES_CLONE") || cloneGate.getContentDescription().toString().contains("NOT_CLONE")) {
                         cloneGate.setInputPoints(0, new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)});
                     } else {
-                        cloneGate.setInputPoints(1, new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (3 * cloneGate.getHeight() / 10.0F)});
-                        cloneGate.setInputPoints(0, new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (7 * cloneGate.getHeight() / 10.0F)});
+                        cloneGate.setInputPoints(0, new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (2 * cloneGate.getHeight() / 5.0F)});
+                        cloneGate.setInputPoints(1, new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F});
                     }
                     cloneGate.setOutputPoint(new Float[]{cloneGate.getX() - tools.getWidth() + cloneGate.getWidth() - 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)});
 

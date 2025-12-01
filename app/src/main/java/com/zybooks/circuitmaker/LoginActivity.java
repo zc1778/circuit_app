@@ -26,7 +26,6 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
-
     private FirebaseAuth mAuth;
 
     @Override
@@ -95,5 +94,9 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }
             });
+    }
+
+    FirebaseUser getUser() {
+        return mAuth.getCurrentUser();
     }
 }

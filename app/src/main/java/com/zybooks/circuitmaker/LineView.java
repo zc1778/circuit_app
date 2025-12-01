@@ -33,7 +33,6 @@ public class LineView extends View {
     public LineView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
-
     }
 
     private void init() {
@@ -57,19 +56,19 @@ public class LineView extends View {
             ArrayList<String> edges = gateEdges.get(gateName);
             assert edges != null;
             for (String edge : edges) {
-                boolean outputStatus = Objects.requireNonNull(gateMap.get(gateName)).getOutputStatus();
-                if (outputStatus) {
+                boolean outputConnectionStatus = Objects.requireNonNull(gateMap.get(gateName)).getOutputConnectionStatus();
+                if (outputConnectionStatus) {
 
                     ArrayList<Float[]> inputPoints = Objects.requireNonNull(gateMap.get(edge)).getInputPoints();
-                    ArrayList<Boolean> inputStatus = Objects.requireNonNull(gateMap.get(edge)).getInputStatus();
+                    ArrayList<Boolean> inputConnectionStatus = Objects.requireNonNull(gateMap.get(edge)).getInputConnectionStatus();
                     for (int i = 0; i < inputPoints.size(); i++) {
                         Log.d("Input Count", String.format("%d", inputPoints.size()));
-                        Log.d("Input Status Count: ", String.format("%d", inputStatus.size()));
+                        Log.d("Input Status Count: ", String.format("%d", inputConnectionStatus.size()));
                         Log.d("Input Point X: ", String.valueOf(inputPoints.get(i)[0]));
-                        Log.d("Input Status A: , ", String.valueOf(inputStatus.get(i)));
+                        Log.d("Input Status A: , ", String.valueOf(inputConnectionStatus.get(i)));
                         Log.d("Input Point Y: ", String.valueOf(inputPoints.get(i)[1]));
 
-                        if (inputStatus.get(i)) {
+                        if (inputConnectionStatus.get(i)) {
                             currentPath.moveTo(Objects.requireNonNull(gateMap.get(gateName)).getOutputPoint()[0], Objects.requireNonNull(gateMap.get(gateName)).getOutputPoint()[1]);
                             currentPath.lineTo(Objects.requireNonNull(inputPoints.get(i)[0]), Objects.requireNonNull(inputPoints.get(i)[1]));
                         }
@@ -92,19 +91,19 @@ public class LineView extends View {
                     Float[] outputPoints = gate.getOutputPoint();
                     Log.d("Output Point X: ", outputPoints[0].toString());
                     Log.d("Output Point Y: ", outputPoints[1].toString());
-                    if (Math.abs(outputPoints[0] - event.getX()) <= 200
-                        && Math.abs(outputPoints[1] - event.getY()) <= 200
-                        && Math.abs(outputPoints[0] - event.getX()) + Math.abs(outputPoints[1] - event.getY()) < closestOut) {
+                    if (Math.abs(outputPoints[0] - event.getRawX()) <= 200
+                        && Math.abs(outputPoints[1] - event.getRawY()) <= 200
+                        && Math.abs(outputPoints[0] - event.getRawX()) + Math.abs(outputPoints[1] - event.getRawY()) < closestOut) {
                         firstX = outputPoints[0];
                         firstY = outputPoints[1];
-                        closestOut = Math.abs(outputPoints[0] - event.getX()) + Math.abs(outputPoints[1] - event.getY());
+                        closestOut = Math.abs(outputPoints[0] - event.getRawX()) + Math.abs(outputPoints[1] - event.getRawY());
                         closestOutGate = gate;
                     }
                 }
 
                 if (closestOutGate != null) {
 //                    currentPath.moveTo(firstX, firstY);
-                    closestOutGate.setOutputStatus(true);
+                    closestOutGate.setOutputConnectionStatus(true);
                     if (!gateEdges.containsKey(closestOutGate.getContentDescription().toString())) {
                         gateEdges.put(closestOutGate.getContentDescription().toString(), new ArrayList<String>());
                     }
@@ -122,22 +121,22 @@ public class LineView extends View {
                     for (Float[] point : inputPoints) {
                         Log.d("Input Point X: ", point[0].toString());
                         Log.d("Input Point Y: ", point[1].toString());
-                        if (Math.abs(point[0] - event.getX()) <= 200
-                                && Math.abs(point[1] - event.getY()) <= 200
-                                && Math.abs(point[0] - event.getX()) + Math.abs(point[1] - event.getY()) <= closestIn
+                        if (Math.abs(point[0] - event.getRawX()) <= 200
+                                && Math.abs(point[1] - event.getRawY()) <= 200
+                                && Math.abs(point[0] - event.getRawX()) + Math.abs(point[1] - event.getRawY()) <= closestIn
                                 && (point[0] > 0.0F && point[1] > 0.0F)) {
                             nextX = point[0];
                             nextY = point[1];
-                            firstGate = nextY <= event.getY();
-                            closestIn = Math.abs(point[0] - event.getX()) + Math.abs(point[1] - event.getY());
+                            firstGate = nextY <= event.getRawY();
+                            closestIn = Math.abs(point[0] - event.getRawX()) + Math.abs(point[1] - event.getRawY());
                             closestInGate = gate;
                         }
                     }
                 }
                 Log.d("End Point X: ", String.valueOf(nextX));
                 Log.d("End Point Y: ", String.valueOf(nextY));
-                Log.d("Event End Point X: ", String.valueOf(event.getX()));
-                Log.d("Event End Point Y: ", String.valueOf(event.getY()));
+                Log.d("Event End Point X: ", String.valueOf(event.getRawX()));
+                Log.d("Event End Point Y: ", String.valueOf(event.getRawY()));
 
                 if (closestInGate != null) {
 //                    currentPath.lineTo(nextX, nextY);
@@ -146,9 +145,9 @@ public class LineView extends View {
                     gates.add(closestInGate.getContentDescription().toString());
                     gateEdges.put(lastGate, gates);
                     if (firstGate) {
-                        closestInGate.setInputStatus(0, true);
+                        closestInGate.setInputConnectionStatus(0, true);
                     } else {
-                        closestInGate.setInputStatus(1, true);
+                        closestInGate.setInputConnectionStatus(1, true);
                     }
                 }
                 invalidate();

@@ -3,7 +3,7 @@
     <string name="toolbox">toolbox</string>
     <string name="save_icon">Save Icon</string>
     <string name="placeholder_button">Button</string>
-    <string name="source">Power Source</string>
+    <string name="source">PWR</string>
     <string name="is_gate">YES</string>
     <string name="not_gate">NOT</string>
     <string name="and_gate">AND</string>

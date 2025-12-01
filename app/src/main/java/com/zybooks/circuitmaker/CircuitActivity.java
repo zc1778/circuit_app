@@ -18,6 +18,8 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -32,6 +34,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -42,10 +46,11 @@ public class CircuitActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_CODE = 100;
     // private final CircuitController controller = new CircuitController();
     private FirebaseUser user;
-    private View tools;
+    private ScrollView tools;
     private View toolBar;
     private LineView draw;
     private ConstraintLayout circuitView;
+    private GateModel powerGate;
     private GateModel isGate;
     private GateModel notGate;
     private GateModel andGate;
@@ -56,7 +61,7 @@ public class CircuitActivity extends AppCompatActivity {
     private GateModel xnorGate;
     // private ImageButton undo, redo, stroke;
     private Button save; //, clear;
-    private ArrayList<Button> components;
+    private ArrayList<GateModel> components;
     private boolean isCloned = false;
     private float buttonX;
     private float buttonY;
@@ -73,6 +78,8 @@ public class CircuitActivity extends AppCompatActivity {
         });
 
         user = FirebaseAuth.getInstance().getCurrentUser();
+
+        Log.d("User", String.valueOf(user));
 
         if (user == null) {
             Intent intent = new Intent(this, LoginActivity.class);
@@ -93,10 +100,11 @@ public class CircuitActivity extends AppCompatActivity {
         toolBar = findViewById(R.id.toolbar);
         tools = findViewById(R.id.circuit_tools);
 
-        components = new ArrayList<Button>();
+        components = new ArrayList<GateModel>();
         circuitView = findViewById(R.id.main);
 
         // Set all gate buttons
+        powerGate = findViewById(R.id.power_button);
         isGate = findViewById(R.id.is_gate);
         notGate = findViewById(R.id.not_gate);
         andGate = findViewById(R.id.and_gate);
@@ -134,10 +142,11 @@ public class CircuitActivity extends AppCompatActivity {
 
             if (toolsVisible == View.VISIBLE) {
                 tools.setVisibility(View.GONE);
-                for (Button b : components) {
-                    b.setX(b.getX() - tools.getWidth() / 2.0F);
-                    b.setY(b.getY() - tools.getHeight() / 2.0F);
-                }
+//                for (Button b : components) {
+//                    b.setX(b.getX() - tools.getWidth() / 2.0F);
+//                    b.setY(b.getY() - tools.getHeight() / 2.0F);
+//                }
+                powerGate.setVisibility(View.GONE);
                 isGate.setVisibility(View.GONE);
                 notGate.setVisibility(View.GONE);
                 andGate.setVisibility(View.GONE);
@@ -148,10 +157,11 @@ public class CircuitActivity extends AppCompatActivity {
                 xnorGate.setVisibility(View.GONE);
             } else {
                 tools.setVisibility(View.VISIBLE);
-                for (Button b : components) {
-                    b.setX(b.getX() + tools.getWidth() / 2.0F);
-                    b.setY(b.getY() + tools.getHeight() / 2.0F);
-                }
+//                for (Button b : components) {
+//                    b.setX(b.getX() + tools.getWidth() / 2.0F);
+//                    b.setY(b.getY() + tools.getHeight() / 2.0F);
+//                }
+                powerGate.setVisibility(View.VISIBLE);
                 isGate.setVisibility(View.VISIBLE);
                 notGate.setVisibility(View.VISIBLE);
                 andGate.setVisibility(View.VISIBLE);
@@ -165,8 +175,8 @@ public class CircuitActivity extends AppCompatActivity {
             Log.d("Visibility of tools container", String.valueOf(tools.getVisibility()));
         });
 
-
         // Set drag listener for the View
+        onLongClickListenerComponent(circuitView, powerGate);
         onLongClickListenerComponent(circuitView, isGate);
         onLongClickListenerComponent(circuitView, notGate);
         onLongClickListenerComponent(circuitView, andGate);
@@ -262,6 +272,9 @@ public class CircuitActivity extends AppCompatActivity {
         String imageType = (String) originalGate.getContentDescription();
 
         switch (imageType) {
+            case "PWR":
+                cloneGate.setContentDescription(String.format(Locale.getDefault(), "PWR_CLONE_%d", cloneGate.getCloneNumber()));
+                break;
             case "YES":
                 cloneGate.setContentDescription(String.format(Locale.getDefault(), "YES_CLONE_%d", cloneGate.getCloneNumber()));
                 break;
@@ -374,15 +387,15 @@ public class CircuitActivity extends AppCompatActivity {
                             cloneGate.setY(buttonY - cloneGate.getHeight() / 2.0F);
 
                             Log.d("Button height: ", String.valueOf(cloneGate.getHeight()));
-                            Log.d("Connection X: ", String.valueOf(cloneGate.getX() - tools.getWidth() + 5.0F));
-                            Log.d("Connection Y: ", String.valueOf(cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)));
+                            Log.d("Connection X: ", String.valueOf(cloneGate.getX())); // - tools.getWidth() + 5.0F));
+                            Log.d("Connection Y: ", String.valueOf(cloneGate.getY())); // - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)));
                             if (cloneGate.getContentDescription().toString().contains("YES") || cloneGate.getContentDescription().toString().contains("NOT")) {
-                                cloneGate.setInputPoints(0, new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)});
+                                cloneGate.setInputPoints(0, new Float[]{cloneGate.getX(), cloneGate.getY()}); // new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)});
                             } else {
-                                cloneGate.setInputPoints(0, new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (2 * cloneGate.getHeight() / 5.0F)});
-                                cloneGate.setInputPoints(1, new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F});
+                                cloneGate.setInputPoints(0, new Float[]{cloneGate.getX(), cloneGate.getY() - cloneGate.getHeight() / 2.0F + (2 * cloneGate.getHeight() / 5.0F)}); // new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (2 * cloneGate.getHeight() / 5.0F)});
+                                cloneGate.setInputPoints(1, new Float[]{cloneGate.getX(), cloneGate.getY() - cloneGate.getHeight() / 2.0F - (2 * cloneGate.getHeight() / 5.0F)}); // new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F});
                             }
-                            cloneGate.setOutputPoint(new Float[]{cloneGate.getX() - tools.getWidth() + cloneGate.getWidth() - 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)});
+                            cloneGate.setOutputPoint(new Float[]{cloneGate.getX() + cloneGate.getWidth() - 5.0F, cloneGate.getY() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)}); // new Float[]{cloneGate.getX() - tools.getWidth() + cloneGate.getWidth() - 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)});
                         }
                     });
 

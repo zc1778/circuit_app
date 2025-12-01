@@ -12,6 +12,8 @@ public class GateModel extends androidx.appcompat.widget.AppCompatButton {
     private Float[] outputPoint;
     private ArrayList<Boolean> inputStatus;
     private boolean outputStatus;
+    private ArrayList<Boolean> inputConnectionStatus;
+    private boolean outputConnectionStatus;
 
     public GateModel(Context context) {
         super(context);
@@ -34,9 +36,13 @@ public class GateModel extends androidx.appcompat.widget.AppCompatButton {
         inputPoints.add(new Float[]{-1.0F, -1.0F});
         inputPoints.add(new Float[]{-1.0F, -1.0F});
         outputPoint = new Float[]{0.0F, 0.0F};
+        inputConnectionStatus = new ArrayList<>();
         inputStatus = new ArrayList<>();
+        inputConnectionStatus.add(false);
+        inputConnectionStatus.add(false);
         inputStatus.add(false);
         inputStatus.add(false);
+        outputConnectionStatus = false;
         outputStatus = false;
     }
 
@@ -52,9 +58,14 @@ public class GateModel extends androidx.appcompat.widget.AppCompatButton {
         return outputPoint;
     }
 
+    public boolean getOutputConnectionStatus() { return outputConnectionStatus; }
+
     public boolean getOutputStatus() { return outputStatus; }
 
     public ArrayList<Boolean> getInputStatus() { return inputStatus; }
+
+    public ArrayList<Boolean> getInputConnectionStatus() { return inputConnectionStatus; }
+
 
     // Setters
 
@@ -72,7 +83,12 @@ public class GateModel extends androidx.appcompat.widget.AppCompatButton {
         this.outputPoint = outputPoint;
     }
 
+
+    public void setInputConnectionStatus(int index, Boolean inputStatus) { this.inputStatus.set(index, inputStatus); }
+
     public void setInputStatus(int index, Boolean inputStatus) { this.inputStatus.set(index, inputStatus); }
+
+    public void setOutputConnectionStatus(Boolean outputStatus) { this.outputStatus = outputStatus; }
 
     public void setOutputStatus(Boolean outputStatus) {
         this.outputStatus = outputStatus;

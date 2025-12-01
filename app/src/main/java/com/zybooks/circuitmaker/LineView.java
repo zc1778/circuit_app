@@ -136,7 +136,10 @@ public class LineView extends View {
                             Log.d("Input Point Passed Y: ", point[1].toString());
                             nextX = point[0];
                             nextY = point[1];
-                            firstGate = nextY <= event.getY();
+                            firstGate = (nextY <= event.getY())
+                                    || gate.getContentDescription().toString().contains("YES")
+                                    || gate.getContentDescription().toString().contains("NOT")
+                                    || gate.getContentDescription().toString().contains("PWR");
                             closestIn = Math.abs(point[0] - event.getX()) + Math.abs(point[1] - event.getY());
                             closestInGate = gate;
                         }

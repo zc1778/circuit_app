@@ -35,7 +35,7 @@ public class GateModel extends androidx.appcompat.widget.AppCompatButton {
         inputPoints = new ArrayList<>();
         inputPoints.add(new Float[]{-1.0F, -1.0F});
         inputPoints.add(new Float[]{-1.0F, -1.0F});
-        outputPoint = new Float[]{0.0F, 0.0F};
+        outputPoint = new Float[]{-1.0F, -1.0F};
         inputConnectionStatus = new ArrayList<>();
         inputStatus = new ArrayList<>();
         inputConnectionStatus.add(false);

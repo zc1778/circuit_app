@@ -149,10 +149,9 @@ public class CircuitActivity extends AppCompatActivity {
 
             if (toolsVisible == View.VISIBLE) {
                 tools.setVisibility(View.GONE);
-//                for (Button b : components) {
-//                    b.setX(b.getX() - tools.getWidth() / 2.0F);
-//                    b.setY(b.getY() - tools.getHeight() / 2.0F);
-//                }
+                for (Button b : components) {
+                    b.setX(b.getX() - tools.getWidth());
+                }
                 powerGate.setVisibility(View.GONE);
                 isGate.setVisibility(View.GONE);
                 notGate.setVisibility(View.GONE);
@@ -164,10 +163,9 @@ public class CircuitActivity extends AppCompatActivity {
                 xnorGate.setVisibility(View.GONE);
             } else {
                 tools.setVisibility(View.VISIBLE);
-//                for (Button b : components) {
-//                    b.setX(b.getX() + tools.getWidth() / 2.0F);
-//                    b.setY(b.getY() + tools.getHeight() / 2.0F);
-//                }
+                for (Button b : components) {
+                    b.setX(b.getX() + tools.getWidth());
+                }
                 powerGate.setVisibility(View.VISIBLE);
                 isGate.setVisibility(View.VISIBLE);
                 notGate.setVisibility(View.VISIBLE);
@@ -380,7 +378,6 @@ public class CircuitActivity extends AppCompatActivity {
                 buttonY = e.getY();
 
                 GateModel cloneGate = cloneGate(e);
-                gateList.add(cloneGate);
 
                 cloneGate.setX(buttonX - cloneGate.getWidth() / 2.0F);
                 cloneGate.setY(buttonY - cloneGate.getHeight() / 2.0F);
@@ -396,15 +393,15 @@ public class CircuitActivity extends AppCompatActivity {
                             cloneGate.setY(buttonY - cloneGate.getHeight() / 2.0F);
 
                             Log.d("Button height: ", String.valueOf(cloneGate.getHeight()));
-                            Log.d("Connection X: ", String.valueOf(cloneGate.getX())); // - tools.getWidth() + 5.0F));
-                            Log.d("Connection Y: ", String.valueOf(cloneGate.getY())); // - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)));
+                            Log.d("Connection X: ", String.valueOf(cloneGate.getX() - tools.getWidth() + 5.0F));
+                            Log.d("Connection Y: ", String.valueOf(cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)));
                             if (cloneGate.getContentDescription().toString().contains("YES") || cloneGate.getContentDescription().toString().contains("NOT")) {
-                                cloneGate.setInputPoints(0, new Float[]{cloneGate.getX(), cloneGate.getY()}); // new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)});
+                                cloneGate.setInputPoints(0, new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)});
                             } else {
-                                cloneGate.setInputPoints(0, new Float[]{cloneGate.getX(), cloneGate.getY() - cloneGate.getHeight() / 2.0F + (2 * cloneGate.getHeight() / 5.0F)}); // new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (2 * cloneGate.getHeight() / 5.0F)});
-                                cloneGate.setInputPoints(1, new Float[]{cloneGate.getX(), cloneGate.getY() - cloneGate.getHeight() / 2.0F - (2 * cloneGate.getHeight() / 5.0F)}); // new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F});
+                                cloneGate.setInputPoints(0, new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (2 * cloneGate.getHeight() / 5.0F)});
+                                cloneGate.setInputPoints(1, new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F});
                             }
-                            cloneGate.setOutputPoint(new Float[]{cloneGate.getX() + cloneGate.getWidth() - 5.0F, cloneGate.getY() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)}); // new Float[]{cloneGate.getX() - tools.getWidth() + cloneGate.getWidth() - 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)});
+                            cloneGate.setOutputPoint(new Float[]{cloneGate.getX() - tools.getWidth() + cloneGate.getWidth() - 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)});
                         }
                     });
 

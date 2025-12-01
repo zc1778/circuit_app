@@ -62,9 +62,9 @@ public class GateModel extends androidx.appcompat.widget.AppCompatButton {
 
     public boolean getOutputStatus() { return outputStatus; }
 
-    public ArrayList<Boolean> getInputStatus() { return inputStatus; }
-
     public ArrayList<Boolean> getInputConnectionStatus() { return inputConnectionStatus; }
+
+    public ArrayList<Boolean> getInputStatus() { return inputStatus; }
 
 
     // Setters
@@ -84,11 +84,11 @@ public class GateModel extends androidx.appcompat.widget.AppCompatButton {
     }
 
 
-    public void setInputConnectionStatus(int index, Boolean inputStatus) { this.inputStatus.set(index, inputStatus); }
+    public void setInputConnectionStatus(int index, Boolean inputConnectionStatus) { this.inputConnectionStatus.set(index, inputConnectionStatus); }
 
     public void setInputStatus(int index, Boolean inputStatus) { this.inputStatus.set(index, inputStatus); }
 
-    public void setOutputConnectionStatus(Boolean outputStatus) { this.outputStatus = outputStatus; }
+    public void setOutputConnectionStatus(Boolean outputConnectionStatus) { this.outputConnectionStatus = outputConnectionStatus; }
 
     public void setOutputStatus(Boolean outputStatus) {
         this.outputStatus = outputStatus;

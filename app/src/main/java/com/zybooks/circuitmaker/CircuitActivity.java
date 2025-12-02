@@ -68,7 +68,6 @@ public class CircuitActivity extends AppCompatActivity {
     private boolean isCloned = false;
     private float buttonX;
     private float buttonY;
-    private ArrayList<GateModel> gateList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -272,6 +271,14 @@ public class CircuitActivity extends AppCompatActivity {
 
             onLongClickListenerComponent(circuitView, cloneGate);
 
+            if (desc.contains("PWR")) {
+                cloneGate.setOnClickListener(v -> {
+                    Log.d("POWER GATE", "clicked");
+                    cloneGate.setOutputStatus(!cloneGate.getOutputStatus());
+                    draw.invalidate();
+                });
+            }
+
             isCloned = true;
             return cloneGate;
         }
@@ -291,6 +298,7 @@ public class CircuitActivity extends AppCompatActivity {
 
         switch (imageType) {
             case "PWR":
+                LineView.incrementPowerCount();
                 cloneGate.setContentDescription(String.format(Locale.getDefault(), "PWR_CLONE_%d", cloneGate.getCloneNumber()));
                 break;
             case "YES":
@@ -477,9 +485,9 @@ public class CircuitActivity extends AppCompatActivity {
 
     void saveGateDataToDatabase() {
         Map<String, Object> gateMap = new HashMap<>();
-        for(int i = 0; i < gateList.size(); i++) {
-            gateMap.put("x location", gateList.get(i).getX());
-            gateMap.put("y location", gateList.get(i).getY());
+        for(int i = 0; i < components.size(); i++) {
+            gateMap.put("x location", components.get(i).getX());
+            gateMap.put("y location", components.get(i).getY());
             db.collection("gates").add(gateMap);
             gateMap.clear();
         }

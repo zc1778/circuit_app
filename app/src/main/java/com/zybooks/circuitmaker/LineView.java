@@ -14,16 +14,19 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Objects;
 
 public class LineView extends View {
 
-    private Paint paint;
+    private Paint standbyPaint;
+    private Paint onPaint;
     private HashMap<String, ArrayList<String>> gateEdges;
     private HashMap<String, GateModel> gateMap;
     private Path currentPath;
+    private static int powerCount;
 
-    private String lastGate;
+    private GateModel lastGate;
 
     public LineView(Context context) {
         super(context);
@@ -36,13 +39,18 @@ public class LineView extends View {
     }
 
     private void init() {
-        paint = new Paint();
+        standbyPaint = new Paint();
+        onPaint = new Paint();
         gateMap = new HashMap<String, GateModel>();
         gateEdges = new HashMap<String, ArrayList<String>>();
         currentPath = new Path();
-        paint.setColor(Color.argb(1.0F, 0.0F, 0.0F, 0.0F));
-        paint.setStrokeWidth(8);
-        paint.setStyle(Paint.Style.STROKE);
+        standbyPaint.setColor(Color.argb(1.0F, 0.0F, 0.0F, 0.0F));
+        onPaint.setColor(Color.argb(1.0F, 1.0F, 0.2F, 0.1F));
+        standbyPaint.setStrokeWidth(8);
+        onPaint.setStrokeWidth(10);
+        standbyPaint.setStyle(Paint.Style.STROKE);
+        onPaint.setStyle(Paint.Style.STROKE);
+        powerCount = -1;
     }
 
     @Override
@@ -51,12 +59,30 @@ public class LineView extends View {
 
         currentPath.reset();
 
+        for (int i = 0; i <= powerCount; i++) {
+            GateModel gate = gateMap.get(String.format(Locale.getDefault(), "PWR_CLONE_%d", i));
+            assert gate != null;
+            for (String gateName : gate.getEdgeGates().keySet()) {
+                if (gateName.contains("YES")) {
+                    GateModel edgeGate = gateMap.get(gateName);
+                    assert edgeGate != null;
+                    int idex = (gate.getEdgeGates()).get(gateName);
+                    if (gate.getOutputStatus()) {
+                        edgeGate.setInputStatus(idex, true);
+                    }
+                    edgeGate.analyzeOutput();
+                }
+
+            }
+        }
+
         for (String gateName : gateEdges.keySet()) {
             Log.d("Gate Name: ", gateName);
             ArrayList<String> edges = gateEdges.get(gateName);
             assert edges != null;
             for (String edge : edges) {
                 boolean outputConnectionStatus = Objects.requireNonNull(gateMap.get(gateName)).getOutputConnectionStatus();
+                boolean outputStatus = Objects.requireNonNull(gateMap.get(gateName)).getOutputStatus();
                 Log.d("Output Status", String.valueOf(outputConnectionStatus));
                 if (outputConnectionStatus) {
 
@@ -66,15 +92,20 @@ public class LineView extends View {
                         Log.d("Input Count", String.format("%d", inputPoints.size()));
                         Log.d("Input Status Count: ", String.format("%d", inputConnectionStatus.size()));
                         Log.d("Input Point X: ", String.valueOf(inputPoints.get(i)[0]));
-                        Log.d("Input Status A: , ", String.valueOf(inputConnectionStatus.get(i)));
                         Log.d("Input Point Y: ", String.valueOf(inputPoints.get(i)[1]));
+                        Log.d("Input Status A: , ", String.valueOf(inputConnectionStatus.get(i)));
 
                         if (inputConnectionStatus.get(i)) {
                             Log.d("Input Status B: ", String.valueOf(inputConnectionStatus.get(i)));
                             currentPath.moveTo(Objects.requireNonNull(gateMap.get(gateName)).getOutputPoint()[0], Objects.requireNonNull(gateMap.get(gateName)).getOutputPoint()[1]);
                             currentPath.lineTo(Objects.requireNonNull(inputPoints.get(i)[0]), Objects.requireNonNull(inputPoints.get(i)[1]));
                         }
-                        canvas.drawPath(currentPath, paint);
+                        if (!outputStatus) {
+                            canvas.drawPath(currentPath, standbyPaint);
+                        }
+                        else {
+                            canvas.drawPath(currentPath, onPaint);
+                        }
                     }
                 }
             }
@@ -114,7 +145,7 @@ public class LineView extends View {
                     if (!gateEdges.containsKey(closestOutGate.getContentDescription().toString())) {
                         gateEdges.put(closestOutGate.getContentDescription().toString(), new ArrayList<String>());
                     }
-                    lastGate = closestOutGate.getContentDescription().toString();
+                    lastGate = closestOutGate;
                 }
 //                invalidate();
                 break;
@@ -152,14 +183,21 @@ public class LineView extends View {
 
                 if (closestInGate != null) {
 //                    currentPath.lineTo(nextX, nextY);
-                    ArrayList<String> gates = gateEdges.get(lastGate);
+                    int idex = -1;
+                    ArrayList<String> gates = gateEdges.get(lastGate.getContentDescription().toString());
                     assert gates != null;
                     gates.add(closestInGate.getContentDescription().toString());
-                    gateEdges.put(lastGate, gates);
+                    gateEdges.put(lastGate.getContentDescription().toString(), gates);
                     if (firstGate) {
+                        idex = 0;
                         closestInGate.setInputConnectionStatus(0, true);
                     } else {
+                        idex = 1;
                         closestInGate.setInputConnectionStatus(1, true);
+                    }
+                    lastGate.addEdgeGate(closestInGate.getContentDescription().toString(), idex);
+                    if (lastGate.getOutputStatus()) {
+                        closestInGate.setInputStatus(idex, true);
                     }
                 }
                 invalidate();
@@ -173,5 +211,13 @@ public class LineView extends View {
 
     public void addGate(GateModel gate) {
         gateMap.put(gate.getContentDescription().toString(), gate);
+    }
+
+    public static void incrementPowerCount() {
+        powerCount++;
+    }
+
+    public static int getPowerCount() {
+        return powerCount;
     }
 }

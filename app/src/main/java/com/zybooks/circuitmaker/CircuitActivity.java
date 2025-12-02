@@ -498,39 +498,43 @@ public class CircuitActivity extends AppCompatActivity {
 
     void saveGateDataToDatabase() throws JSONException, ExecutionException, InterruptedException {
         Map<String, Object> circuitObject = new HashMap<>();
-        Map<String, Object> gateObject = new HashMap<>();
-        Map<String, Object> inputPointsObject = new HashMap<>();
         Task<DocumentSnapshot> docFuture = db.collection("gates").document(user.getUid()).get();
         while (!docFuture.isComplete()) {
             continue;
         }
         DocumentSnapshot docSnap = docFuture.getResult();
         for(int i = 0; i < components.size(); i++) {
+            Map<String, Object> gateDataObject = new HashMap<>();
+            Map<String, Object> edgeGateObject = new HashMap<>();
+            Map<String, Object> inputPointsObject = new HashMap<>();
             Log.d("Gate", components.get(i).getContentDescription().toString());
-            circuitObject.put("type", components.get(i).getContentDescription());
-            gateObject.put("x_location", components.get(i).getX());
-            gateObject.put("y_location", components.get(i).getY());
+            gateDataObject.put("x_location", components.get(i).getX());
+            gateDataObject.put("y_location", components.get(i).getY());
             ArrayList<ArrayList<Float>> inputPoints = components.get(i).getInputPoints();
             for (int j = 0; j < inputPoints.size(); j++) {
                 inputPointsObject.put(String.valueOf(j), inputPoints.get(j));
             }
-            gateObject.put("input_points", inputPointsObject);
-            gateObject.put("input_connections", components.get(i).getInputConnectionStatus());
-            gateObject.put("input_statuses", components.get(i).getInputStatus());
-            gateObject.put("output_point", components.get(i).getOutputPoint());
-            gateObject.put("output_connections", components.get(i).getOutputConnectionStatus());
-            gateObject.put("output_status", components.get(i).getOutputStatus());
-            gateObject.put("clone_number", components.get(i).getCloneNumber());
-            gateObject.put("edge_gates", components.get(i).getEdgeGates());
-            circuitObject.put("data", gateObject);
-            if (i > 0) {
-                db.collection("gates").document(user.getUid()).update(circuitObject);
-            } else {
-                db.collection("gates").document(user.getUid()).set(circuitObject);
+            gateDataObject.put("input_points", inputPointsObject);
+            gateDataObject.put("input_connections", components.get(i).getInputConnectionStatus());
+            gateDataObject.put("input_statuses", components.get(i).getInputStatus());
+            gateDataObject.put("output_point", components.get(i).getOutputPoint());
+            gateDataObject.put("output_connections", components.get(i).getOutputConnectionStatus());
+            gateDataObject.put("output_status", components.get(i).getOutputStatus());
+            gateDataObject.put("clone_number", components.get(i).getCloneNumber());
+            HashMap<String, Integer> edgeGates = components.get(i).getEdgeGates();
+            for (String gate : edgeGates.keySet()) {
+                edgeGateObject.put(gate, edgeGates.get(gate));
             }
-            circuitObject.clear();
-            gateObject.clear();
-            inputPointsObject.clear();
+            gateDataObject.put("edge_gates", edgeGateObject);
+            circuitObject.put(components.get(i).getContentDescription().toString(), gateDataObject);
+//            edgeGateObject.clear();
+//            gateDataObject.clear();
+//            inputPointsObject.clear();
+        }
+        if (docSnap.exists()) {
+            db.collection("gates").document(user.getUid()).update(circuitObject);
+        } else {
+            db.collection("gates").document(user.getUid()).set(circuitObject);
         }
     }
 }

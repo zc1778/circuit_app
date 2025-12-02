@@ -69,6 +69,8 @@ public class LineView extends View {
                     int idex = (gate.getEdgeGates()).get(gateName);
                     if (gate.getOutputStatus()) {
                         edgeGate.setInputStatus(idex, true);
+                    } else {
+                        edgeGate.setInputStatus(idex, false);
                     }
                     edgeGate.analyzeOutput();
                 }
@@ -86,19 +88,19 @@ public class LineView extends View {
                 Log.d("Output Status", String.valueOf(outputConnectionStatus));
                 if (outputConnectionStatus) {
 
-                    ArrayList<Float[]> inputPoints = Objects.requireNonNull(gateMap.get(edge)).getInputPoints();
+                    ArrayList<ArrayList<Float>> inputPoints = Objects.requireNonNull(gateMap.get(edge)).getInputPoints();
                     ArrayList<Boolean> inputConnectionStatus = Objects.requireNonNull(gateMap.get(edge)).getInputConnectionStatus();
                     for (int i = 0; i < inputPoints.size(); i++) {
                         Log.d("Input Count", String.format("%d", inputPoints.size()));
                         Log.d("Input Status Count: ", String.format("%d", inputConnectionStatus.size()));
-                        Log.d("Input Point X: ", String.valueOf(inputPoints.get(i)[0]));
-                        Log.d("Input Point Y: ", String.valueOf(inputPoints.get(i)[1]));
+                        Log.d("Input Point X: ", String.valueOf(inputPoints.get(i).get(0)));
+                        Log.d("Input Point Y: ", String.valueOf(inputPoints.get(i).get(1)));
                         Log.d("Input Status A: , ", String.valueOf(inputConnectionStatus.get(i)));
 
                         if (inputConnectionStatus.get(i)) {
                             Log.d("Input Status B: ", String.valueOf(inputConnectionStatus.get(i)));
-                            currentPath.moveTo(Objects.requireNonNull(gateMap.get(gateName)).getOutputPoint()[0], Objects.requireNonNull(gateMap.get(gateName)).getOutputPoint()[1]);
-                            currentPath.lineTo(Objects.requireNonNull(inputPoints.get(i)[0]), Objects.requireNonNull(inputPoints.get(i)[1]));
+                            currentPath.moveTo(Objects.requireNonNull(gateMap.get(gateName)).getOutputPoint().get(0), Objects.requireNonNull(gateMap.get(gateName)).getOutputPoint().get(1));
+                            currentPath.lineTo(Objects.requireNonNull(inputPoints.get(i).get(0)), Objects.requireNonNull(inputPoints.get(i).get(1)));
                         }
                         if (!outputStatus) {
                             canvas.drawPath(currentPath, standbyPaint);
@@ -121,15 +123,15 @@ public class LineView extends View {
                 float closestOut = Float.MAX_VALUE;
                 GateModel closestOutGate = null;
                 for (GateModel gate : gateMap.values()) {
-                    Float[] outputPoints = gate.getOutputPoint();
-                    Log.d("Output Point X: ", outputPoints[0].toString());
-                    Log.d("Output Point Y: ", outputPoints[1].toString());
-                    if (Math.abs(outputPoints[0] - event.getX()) <= 200
-                        && Math.abs(outputPoints[1] - event.getY()) <= 200
-                        && Math.abs(outputPoints[0] - event.getX()) + Math.abs(outputPoints[1] - event.getY()) < closestOut) {
-                        firstX = outputPoints[0];
-                        firstY = outputPoints[1];
-                        closestOut = Math.abs(outputPoints[0] - event.getX()) + Math.abs(outputPoints[1] - event.getY());
+                    ArrayList<Float> outputPoints = gate.getOutputPoint();
+                    Log.d("Output Point X: ", outputPoints.get(0).toString());
+                    Log.d("Output Point Y: ", outputPoints.get(1).toString());
+                    if (Math.abs(outputPoints.get(0) - event.getX()) <= 200
+                        && Math.abs(outputPoints.get(1) - event.getY()) <= 200
+                        && Math.abs(outputPoints.get(0) - event.getX()) + Math.abs(outputPoints.get(1) - event.getY()) < closestOut) {
+                        firstX = outputPoints.get(0);
+                        firstY = outputPoints.get(1);
+                        closestOut = Math.abs(outputPoints.get(0) - event.getX()) + Math.abs(outputPoints.get(1) - event.getY());
                         closestOutGate = gate;
                     }
                 }
@@ -155,23 +157,23 @@ public class LineView extends View {
                 GateModel closestInGate = null;
                 boolean firstGate = true;
                 for (GateModel gate : gateMap.values()) {
-                    ArrayList<Float[]> inputPoints = gate.getInputPoints();
-                    for (Float[] point : inputPoints) {
-                        Log.d("Input Point X: ", point[0].toString());
-                        Log.d("Input Point Y: ", point[1].toString());
-                        if (Math.abs(point[0] - event.getX()) <= 200
-                                && Math.abs(point[1] - event.getY()) <= 200
-                                && Math.abs(point[0] - event.getX()) + Math.abs(point[1] - event.getY()) <= closestIn
-                                && (point[0] > 0.0F && point[1] > 0.0F)) {
-                            Log.d("Input Point Passed X: ", point[0].toString());
-                            Log.d("Input Point Passed Y: ", point[1].toString());
-                            nextX = point[0];
-                            nextY = point[1];
+                    ArrayList<ArrayList<Float>> inputPoints = gate.getInputPoints();
+                    for (ArrayList<Float> point : inputPoints) {
+                        Log.d("Input Point X: ", point.get(0).toString());
+                        Log.d("Input Point Y: ", point.get(1).toString());
+                        if (Math.abs(point.get(0) - event.getX()) <= 200
+                                && Math.abs(point.get(1) - event.getY()) <= 200
+                                && Math.abs(point.get(0) - event.getX()) + Math.abs(point.get(1) - event.getY()) <= closestIn
+                                && (point.get(0) > 0.0F && point.get(1) > 0.0F)) {
+                            Log.d("Input Point Passed X: ", point.get(0).toString());
+                            Log.d("Input Point Passed Y: ", point.get(1).toString());
+                            nextX = point.get(0);
+                            nextY = point.get(1);
                             firstGate = (nextY <= event.getY())
                                     || gate.getContentDescription().toString().contains("YES")
                                     || gate.getContentDescription().toString().contains("NOT")
                                     || gate.getContentDescription().toString().contains("PWR");
-                            closestIn = Math.abs(point[0] - event.getX()) + Math.abs(point[1] - event.getY());
+                            closestIn = Math.abs(point.get(0) - event.getX()) + Math.abs(point.get(1) - event.getY());
                             closestInGate = gate;
                         }
                     }

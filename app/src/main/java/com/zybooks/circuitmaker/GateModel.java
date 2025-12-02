@@ -4,15 +4,16 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class GateModel extends androidx.appcompat.widget.AppCompatButton {
 
     private int cloneNumber;
-    private ArrayList<Float[]> inputPoints;
+    private ArrayList<ArrayList<Float>> inputPoints;
     private ArrayList<Boolean> inputConnectionStatus;
     private ArrayList<Boolean> inputStatus;
-    private Float[] outputPoint;
+    private ArrayList<Float> outputPoint;
     private boolean outputConnectionStatus;
     private boolean outputStatus;
     private HashMap<String, Integer> edgeGates;
@@ -35,15 +36,15 @@ public class GateModel extends androidx.appcompat.widget.AppCompatButton {
     private void init() {
         cloneNumber = 0;
         inputPoints = new ArrayList<>();
-        inputPoints.add(new Float[]{-1.0F, -1.0F});
-        inputPoints.add(new Float[]{-1.0F, -1.0F});
+        inputPoints.add(new ArrayList<Float>(Arrays.asList(-1.0F, -1.0F)));
+        inputPoints.add(new ArrayList<Float>(Arrays.asList(-1.0F, -1.0F)));
         inputConnectionStatus = new ArrayList<>();
         inputConnectionStatus.add(false);
         inputConnectionStatus.add(false);
         inputStatus = new ArrayList<>();
         inputStatus.add(false);
         inputStatus.add(false);
-        outputPoint = new Float[]{-1.0F, -1.0F};
+        outputPoint = new ArrayList<Float>(Arrays.asList(-1.0F, -1.0F));
         outputConnectionStatus = false;
         outputStatus = false;
         edgeGates = new HashMap<>();
@@ -53,7 +54,7 @@ public class GateModel extends androidx.appcompat.widget.AppCompatButton {
 
     public int getCloneNumber() { return cloneNumber; }
 
-    public ArrayList<Float[]> getInputPoints() {
+    public ArrayList<ArrayList<Float>> getInputPoints() {
         return inputPoints;
     }
 
@@ -61,7 +62,7 @@ public class GateModel extends androidx.appcompat.widget.AppCompatButton {
 
     public ArrayList<Boolean> getInputStatus() { return inputStatus; }
 
-    public Float[] getOutputPoint() {
+    public ArrayList<Float> getOutputPoint() {
         return outputPoint;
     }
 
@@ -80,13 +81,13 @@ public class GateModel extends androidx.appcompat.widget.AppCompatButton {
     // Setters
 
     public void setCloneNumber(int cloneNumber) { this.cloneNumber = cloneNumber; }
-    public void setInputPoints(int index, Float[] inputPoint) { this.inputPoints.set(index, inputPoint); }
+    public void setInputPoints(int index, ArrayList<Float> inputPoint) { this.inputPoints.set(index, inputPoint); }
 
     public void setInputConnectionStatus(int index, Boolean inputConnectionStatus) { this.inputConnectionStatus.set(index, inputConnectionStatus); }
 
     public void setInputStatus(int index, Boolean inputStatus) { this.inputStatus.set(index, inputStatus); }
 
-    public void setOutputPoint(Float[] outputPoint) {
+    public void setOutputPoint(ArrayList<Float> outputPoint) {
         this.outputPoint = outputPoint;
     }
 

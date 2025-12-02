@@ -30,25 +30,29 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import org.json.JSONObject;
+import org.json.JSONException;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 public class CircuitActivity extends AppCompatActivity {
 
     private static final int STORAGE_PERMISSION_CODE = 100;
     // private final CircuitController controller = new CircuitController();
     private FirebaseUser user;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseFirestore db;
     private ScrollView tools;
     private View toolBar;
     private LineView draw;
@@ -81,6 +85,7 @@ public class CircuitActivity extends AppCompatActivity {
         });
 
         user = FirebaseAuth.getInstance().getCurrentUser();
+        db = FirebaseFirestore.getInstance();
 
         Log.d("User", String.valueOf(user));
 
@@ -117,7 +122,7 @@ public class CircuitActivity extends AppCompatActivity {
         xorGate = findViewById(R.id.xor_gate);
         xnorGate = findViewById(R.id.xnor_gate);
 
-        save.setOnClickListener(v -> /*Bitmap bitmap = getBitmapFromView(draw);
+        save.setOnClickListener(v -> {/*Bitmap bitmap = getBitmapFromView(draw);
             Uri imageUri = saveBitmapToStorage(bitmap);
 
             if (imageUri != null) {
@@ -127,7 +132,15 @@ public class CircuitActivity extends AppCompatActivity {
             } else {
                 Log.e("draw", "Saving failed");
                 Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
-            }*/ draw.post(this::saveGateDataToDatabase));
+            }*/
+            draw.post(() -> {
+                try {
+                    saveGateDataToDatabase();
+                } catch (JSONException | ExecutionException | InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        });
 
         ImageButton button = findViewById(R.id.toolBox);
 
@@ -416,12 +429,12 @@ public class CircuitActivity extends AppCompatActivity {
                             Log.d("Connection X: ", String.valueOf(cloneGate.getX() - tools.getWidth() + 5.0F));
                             Log.d("Connection Y: ", String.valueOf(cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)));
                             if (cloneGate.getContentDescription().toString().contains("YES") || cloneGate.getContentDescription().toString().contains("NOT")) {
-                                cloneGate.setInputPoints(0, new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)});
+                                cloneGate.setInputPoints(0, new ArrayList<Float>(Arrays.asList(cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F))));
                             } else {
-                                cloneGate.setInputPoints(0, new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (2 * cloneGate.getHeight() / 5.0F)});
-                                cloneGate.setInputPoints(1, new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F});
+                                cloneGate.setInputPoints(0, new ArrayList<Float>(Arrays.asList(cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (2 * cloneGate.getHeight() / 5.0F))));
+                                cloneGate.setInputPoints(1, new ArrayList<Float>(Arrays.asList(cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F)));
                             }
-                            cloneGate.setOutputPoint(new Float[]{cloneGate.getX() - tools.getWidth() + cloneGate.getWidth() - 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)});
+                            cloneGate.setOutputPoint(new ArrayList<Float>(Arrays.asList(cloneGate.getX() - tools.getWidth() + cloneGate.getWidth() - 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F))));
                         }
                     });
 
@@ -434,21 +447,21 @@ public class CircuitActivity extends AppCompatActivity {
                     if (tools.getVisibility() == View.VISIBLE) {
 
                         if (cloneGate.getContentDescription().toString().contains("YES_CLONE") || cloneGate.getContentDescription().toString().contains("NOT_CLONE")) {
-                            cloneGate.setInputPoints(0, new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)});
+                            cloneGate.setInputPoints(0, new ArrayList<Float>(Arrays.asList(cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F))));
                         } else {
-                            cloneGate.setInputPoints(0, new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (2 * cloneGate.getHeight() / 5.0F)});
-                            cloneGate.setInputPoints(1, new Float[]{cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F});
+                            cloneGate.setInputPoints(0, new ArrayList<Float>(Arrays.asList(cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (2 * cloneGate.getHeight() / 5.0F))));
+                            cloneGate.setInputPoints(1, new ArrayList<Float>(Arrays.asList(cloneGate.getX() - tools.getWidth() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F)));
                         }
-                        cloneGate.setOutputPoint(new Float[]{cloneGate.getX() - tools.getWidth() + cloneGate.getWidth() - 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)});
+                        cloneGate.setOutputPoint(new ArrayList<Float>(Arrays.asList(cloneGate.getX() - tools.getWidth() + cloneGate.getWidth() - 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F))));
                     } else {
 
                         if (cloneGate.getContentDescription().toString().contains("YES_CLONE") || cloneGate.getContentDescription().toString().contains("NOT_CLONE")) {
-                            cloneGate.setInputPoints(0, new Float[]{cloneGate.getX() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)});
+                            cloneGate.setInputPoints(0, new ArrayList<Float>(Arrays.asList(cloneGate.getX() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F))));
                         } else {
-                            cloneGate.setInputPoints(0, new Float[]{cloneGate.getX() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (2 * cloneGate.getHeight() / 5.0F)});
-                            cloneGate.setInputPoints(1, new Float[]{cloneGate.getX() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F});
+                            cloneGate.setInputPoints(0, new ArrayList<Float>(Arrays.asList(cloneGate.getX() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (2 * cloneGate.getHeight() / 5.0F))));
+                            cloneGate.setInputPoints(1, new ArrayList<Float>(Arrays.asList(cloneGate.getX() + 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F)));
                         }
-                        cloneGate.setOutputPoint(new Float[]{cloneGate.getX() + cloneGate.getWidth() - 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F)});
+                        cloneGate.setOutputPoint(new ArrayList<Float>(Arrays.asList(cloneGate.getX() + cloneGate.getWidth() - 5.0F, cloneGate.getY() - toolBar.getHeight() - cloneGate.getHeight() / 2.0F + (cloneGate.getHeight() / 5.0F))));
                     }
                     draw.invalidate();
                 }
@@ -483,13 +496,41 @@ public class CircuitActivity extends AppCompatActivity {
         return false;
     }
 
-    void saveGateDataToDatabase() {
-        Map<String, Object> gateMap = new HashMap<>();
+    void saveGateDataToDatabase() throws JSONException, ExecutionException, InterruptedException {
+        Map<String, Object> circuitObject = new HashMap<>();
+        Map<String, Object> gateObject = new HashMap<>();
+        Map<String, Object> inputPointsObject = new HashMap<>();
+        Task<DocumentSnapshot> docFuture = db.collection("gates").document(user.getUid()).get();
+        while (!docFuture.isComplete()) {
+            continue;
+        }
+        DocumentSnapshot docSnap = docFuture.getResult();
         for(int i = 0; i < components.size(); i++) {
-            gateMap.put("x location", components.get(i).getX());
-            gateMap.put("y location", components.get(i).getY());
-            db.collection("gates").add(gateMap);
-            gateMap.clear();
+            Log.d("Gate", components.get(i).getContentDescription().toString());
+            circuitObject.put("type", components.get(i).getContentDescription());
+            gateObject.put("x_location", components.get(i).getX());
+            gateObject.put("y_location", components.get(i).getY());
+            ArrayList<ArrayList<Float>> inputPoints = components.get(i).getInputPoints();
+            for (int j = 0; j < inputPoints.size(); j++) {
+                inputPointsObject.put(String.valueOf(j), inputPoints.get(j));
+            }
+            gateObject.put("input_points", inputPointsObject);
+            gateObject.put("input_connections", components.get(i).getInputConnectionStatus());
+            gateObject.put("input_statuses", components.get(i).getInputStatus());
+            gateObject.put("output_point", components.get(i).getOutputPoint());
+            gateObject.put("output_connections", components.get(i).getOutputConnectionStatus());
+            gateObject.put("output_status", components.get(i).getOutputStatus());
+            gateObject.put("clone_number", components.get(i).getCloneNumber());
+            gateObject.put("edge_gates", components.get(i).getEdgeGates());
+            circuitObject.put("data", gateObject);
+            if (i > 0) {
+                db.collection("gates").document(user.getUid()).update(circuitObject);
+            } else {
+                db.collection("gates").document(user.getUid()).set(circuitObject);
+            }
+            circuitObject.clear();
+            gateObject.clear();
+            inputPointsObject.clear();
         }
     }
 }

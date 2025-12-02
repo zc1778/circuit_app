@@ -68,6 +68,7 @@ public class CircuitActivity extends AppCompatActivity {
     private GateModel xnorGate;
     // private ImageButton undo, redo, stroke;
     private Button save; //, clear;
+    private ImageButton profileButton;
     private ArrayList<GateModel> components;
     private boolean isCloned = false;
     private float buttonX;
@@ -104,6 +105,15 @@ public class CircuitActivity extends AppCompatActivity {
         draw = findViewById(R.id.circuit_view);
 
         save = findViewById(R.id.save);
+
+        profileButton = findViewById(R.id.sign_out_button);
+
+        profileButton.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        });
 
         toolBar = findViewById(R.id.toolbar);
         tools = findViewById(R.id.circuit_tools);
@@ -499,10 +509,6 @@ public class CircuitActivity extends AppCompatActivity {
     void saveGateDataToDatabase() throws JSONException, ExecutionException, InterruptedException {
         Map<String, Object> circuitObject = new HashMap<>();
         Task<DocumentSnapshot> docFuture = db.collection("gates").document(user.getUid()).get();
-        while (!docFuture.isComplete()) {
-            continue;
-        }
-        DocumentSnapshot docSnap = docFuture.getResult();
         for(int i = 0; i < components.size(); i++) {
             Map<String, Object> gateDataObject = new HashMap<>();
             Map<String, Object> edgeGateObject = new HashMap<>();
@@ -531,10 +537,15 @@ public class CircuitActivity extends AppCompatActivity {
 //            gateDataObject.clear();
 //            inputPointsObject.clear();
         }
+        while (!docFuture.isComplete()) {
+            continue;
+        }
+        DocumentSnapshot docSnap = docFuture.getResult();
         if (docSnap.exists()) {
             db.collection("gates").document(user.getUid()).update(circuitObject);
         } else {
             db.collection("gates").document(user.getUid()).set(circuitObject);
         }
+        circuitObject.clear();
     }
 }

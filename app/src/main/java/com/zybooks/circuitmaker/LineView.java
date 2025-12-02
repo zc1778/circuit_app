@@ -63,18 +63,11 @@ public class LineView extends View {
             GateModel gate = gateMap.get(String.format(Locale.getDefault(), "PWR_CLONE_%d", i));
             assert gate != null;
             for (String gateName : gate.getEdgeGates().keySet()) {
-                if (gateName.contains("YES")) {
-                    GateModel edgeGate = gateMap.get(gateName);
-                    assert edgeGate != null;
-                    int idex = (gate.getEdgeGates()).get(gateName);
-                    if (gate.getOutputStatus()) {
-                        edgeGate.setInputStatus(idex, true);
-                    } else {
-                        edgeGate.setInputStatus(idex, false);
-                    }
-                    edgeGate.analyzeOutput();
-                }
-
+                GateModel edgeGate = gateMap.get(gateName);
+                assert edgeGate != null;
+                int idex = (gate.getEdgeGates()).get(gateName);
+                edgeGate.setInputStatus(idex, gate.getOutputStatus());
+                edgeGate.analyzeOutput();
             }
         }
 

@@ -3,6 +3,7 @@
     <string name="toolbox">toolbox</string>
     <string name="save_icon">Save Icon</string>
     <string name="sign_out">Sign Out</string>
+    <string name="circuit_name_label">Name Your Circuit</string>
     <string name="power_source">PWR</string>
     <string name="is_gate">YES</string>
     <string name="not_gate">NOT</string>

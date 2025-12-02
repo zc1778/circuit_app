@@ -67,7 +67,7 @@ public class CircuitActivity extends AppCompatActivity {
     private GateModel xorGate;
     private GateModel xnorGate;
     // private ImageButton undo, redo, stroke;
-    private Button save; //, clear;
+    private ImageButton save; //, clear;
     private ImageButton profileButton;
     private ArrayList<GateModel> components;
     private boolean isCloned = false;

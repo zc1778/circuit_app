@@ -42,7 +42,7 @@
         app:srcCompat="@drawable/person_circle_outline" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/save"
         android:layout_width="69dp"
         android:layout_height="72dp"
         android:layout_marginTop="20dp"
@@ -159,12 +159,52 @@
         android:id="@+id/circuit_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@id/circuit_tools"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         app:layout_constraintVertical_bias="1.0" />
+
+    <LinearLayout
+        android:id="@+id/name_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/round_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/circuit_name_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="20dp"
+            android:text="@string/circuit_name_label"
+            android:labelFor="@id/circuit_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+        <EditText
+            android:id="@+id/circuit_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginHorizontal="20dp"
+            android:autofillHints="Circuit Name"
+            android:inputType="text"
+            android:enabled="false"
+            app:layout_constraintTop_toBottomOf="@id/circuit_name_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </LinearLayout>
 
 <!--    <com.zybooks.circuitmaker.GateModel-->
 <!--        android:id="@+id/circuit_source"-->
@@ -176,56 +216,56 @@
 <!--        app:layout_constraintTop_toTopOf="@id/circuit_view"-->
 <!--        app:layout_constraintBottom_toBottomOf="@id/circuit_view" />-->
 
-    <ImageButton
-        android:id="@+id/undo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:contentDescription="@string/undo"
-        android:layout_weight="1"
-        android:backgroundTint="@color/primary_color"
-        android:src="@drawable/undo_btn"
-        app:layout_constraintEnd_toEndOf="@id/circuit_view"
-        app:layout_constraintBottom_toBottomOf="@id/circuit_view" />
+<!--    <ImageButton-->
+<!--        android:id="@+id/undo"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="vertical"-->
+<!--        android:contentDescription="@string/undo"-->
+<!--        android:layout_weight="1"-->
+<!--        android:backgroundTint="@color/primary_color"-->
+<!--        android:src="@drawable/undo_btn"-->
+<!--        app:layout_constraintEnd_toEndOf="@id/circuit_view"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/circuit_view" />-->
 
-    <ImageButton
-        android:id="@+id/redo"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginEnd="10dp"
-        android:orientation="vertical"
-        android:contentDescription="@string/redo"
-        android:layout_weight="1"
-        android:backgroundTint="@color/primary_color"
-        android:src="@drawable/redo_btn"
-        app:layout_constraintEnd_toStartOf="@id/undo"
-        app:layout_constraintBottom_toBottomOf="@id/circuit_view" />
+<!--    <ImageButton-->
+<!--        android:id="@+id/redo"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_marginEnd="10dp"-->
+<!--        android:orientation="vertical"-->
+<!--        android:contentDescription="@string/redo"-->
+<!--        android:layout_weight="1"-->
+<!--        android:backgroundTint="@color/primary_color"-->
+<!--        android:src="@drawable/redo_btn"-->
+<!--        app:layout_constraintEnd_toStartOf="@id/undo"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/circuit_view" />-->
 
-    <Button
-        android:id="@+id/clean"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_weight="1"
-        android:background="@color/black"
-        android:backgroundTint="@color/primary_color"
-        android:text="@string/clear"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="@id/circuit_view"
-        app:layout_constraintTop_toTopOf="@id/circuit_view" />
+<!--    <Button-->
+<!--        android:id="@+id/clean"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="8dp"-->
+<!--        android:layout_weight="1"-->
+<!--        android:background="@color/black"-->
+<!--        android:backgroundTint="@color/primary_color"-->
+<!--        android:text="@string/clear"-->
+<!--        android:textColor="@color/black"-->
+<!--        app:layout_constraintEnd_toEndOf="@id/circuit_view"-->
+<!--        app:layout_constraintTop_toTopOf="@id/circuit_view" />-->
 
-    <Button
-        android:id="@+id/save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_weight="1"
-        android:background="@color/black"
-        android:backgroundTint="@color/primary_color"
-        android:text="@string/save"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toStartOf="@id/clean"
-        app:layout_constraintTop_toTopOf="@id/circuit_view" />
+<!--    <Button-->
+<!--        android:id="@+id/save"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="8dp"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:layout_weight="1"-->
+<!--        android:background="@color/black"-->
+<!--        android:backgroundTint="@color/primary_color"-->
+<!--        android:text="@string/save"-->
+<!--        android:textColor="@color/black"-->
+<!--        app:layout_constraintEnd_toStartOf="@id/clean"-->
+<!--        app:layout_constraintTop_toTopOf="@id/circuit_view" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
